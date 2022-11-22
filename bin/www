@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+/**
+ * @file Run express.js
+ * @author BINAR_C7
+ */
+
+const app = require("../app")
+
+const dotenv = require('dotenv')
+
+dotenv.config();
+
+const port = process.env.PORT;
+
+app.listen(port, () => {
+  console.log(`Listening on http://localhost:${port}`)
+})
