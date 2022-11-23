@@ -1409,10 +1409,10 @@
   "resolved" "https://registry.npmjs.org/sequelize-pool/-/sequelize-pool-7.1.0.tgz"
   "version" "7.1.0"
 
-"sequelize@^6.25.7":
-  "integrity" "sha512-aH/zbsAFw8mlsmKIbd57Uo5FdRko3by53cumiiXARr0s2G79ME0LuJlS5H10I5WmRcYcvwp1MAfI9CKhCtULjw=="
-  "resolved" "https://registry.npmjs.org/sequelize/-/sequelize-6.25.7.tgz"
-  "version" "6.25.7"
+"sequelize@^6.25.8":
+  "integrity" "sha512-GDjbN3P9KRjxL+ATNPMWU0RFAO3KviGzvowajqPCkvEdcEW9CFL4d0iDR/SFAf+JiQ7/2BQ4O3PBLBxNlnVNWw=="
+  "resolved" "https://registry.npmjs.org/sequelize/-/sequelize-6.25.8.tgz"
+  "version" "6.25.8"
   dependencies:
     "@types/debug" "^4.1.7"
     "@types/validator" "^13.7.1"

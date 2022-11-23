@@ -4,7 +4,11 @@
  */
 
 // const postController = require("./postController");
+const carts = require('./carts');
 
+module.exports = {
+  carts,
+};
 // module.exports = {
 //   postController,
 // };
