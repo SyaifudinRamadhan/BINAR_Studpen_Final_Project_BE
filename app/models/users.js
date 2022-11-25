@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     l_name: DataTypes.STRING,
     active: DataTypes.BOOLEAN,
     access_level: DataTypes.INTEGER,
-    deleted: DataTypes.BOOLEAN
+    deleted: DataTypes.BOOLEAN,
+    photo: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Users',

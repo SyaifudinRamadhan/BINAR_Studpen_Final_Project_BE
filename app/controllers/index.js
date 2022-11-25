@@ -4,7 +4,8 @@
  */
 
 const api = require("./api");
+const middleware = require('./middleware');
 
 module.exports = {
-  api,
+  api, middleware
 };
