@@ -12,3 +12,6 @@ Untuk dapat menjalankan repo ini pertama kali, lakukan perintah :
 3. Jalankan perintah Dequelize db:seed:all
 
 NB : Jika perintah 2 & 3 gagal, coba dengan sequelize (huruf "S" jadi kecil "s")
+
+Catatan : 
+Untuk mas Fikri : "Mas ini aku nge fetch reponya. Dan sudah terlanjur ku atur .env nya sesuai laptopku. Nanti silahkan disesuaikan lagi dengan env laptopnya mas ya. Terus pas nge push nanti kasih ignore di .env nya. Aku juga sama gitu nanti pas push setelah ini. Biar g ngubah settingan teru terusan.

@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       trx_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       status: {
         type: Sequelize.STRING

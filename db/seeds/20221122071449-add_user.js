@@ -24,6 +24,7 @@ module.exports = {
       active: true,
       access_level: 1,
       deleted: false,
+      photo: '/user/avatar_default.png',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -38,6 +39,7 @@ module.exports = {
       active: true,
       access_level: 0,
       deleted: false,
+      photo: '/user/avatar_default.png',
       createdAt: new Date(),
       updatedAt: new Date()
     },

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Checkin.init({
-    trx_id: DataTypes.STRING,
+    trx_id: DataTypes.INTEGER,
     status: DataTypes.STRING
   }, {
     sequelize,
