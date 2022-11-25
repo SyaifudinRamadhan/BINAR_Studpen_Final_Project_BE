@@ -3,6 +3,7 @@ const ctrl = require("../app/controllers")
 const path = require('path');
 const { uploadUser } = require("../app/controllers/middleware/upload");
 
+
 const apiRouter = express.Router()
 
 apiRouter.use(express.static(path.join(__dirname, '../bin/public')));
@@ -19,12 +20,14 @@ apiRouter.post("/api/v1/loginRegGoogle", ctrl.api.v1.loginRegGoogle)
 // Route untuk user login
 apiRouter.get("/api/v1/who-am-i", ctrl.middleware.isLogin, ctrl.api.v1.whoAmI)
 apiRouter.put("/api/v1/update-profile", ctrl.middleware.isLogin, uploadUser.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.updateUser, ctrl.api.v1.updateProfile)
+apiRouter.get('/api/v1/carts', ctrl.api.v1.carts.list);
 // Route untuk admin
 apiRouter.delete("/api/v1/delete-user", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser)
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
  */
+
 apiRouter.get("/api/v1/errors", () => {
   throw new Error(
     "The Industrial Revolution and its consequences have been a disaster for the human race."

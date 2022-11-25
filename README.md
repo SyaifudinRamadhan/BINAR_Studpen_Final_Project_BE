@@ -1,24 +1,14 @@
-# Binar: Express.js
+# Binar: Express.js Final Project
 
-Repository ini ditujukan sebagai boilerplate dalam membuat sebuah HTTP Server menggunakan Express.js
-Repository ini menggunakan Service Repository Pattern, yang artinya di dalam repository ini terdapat modul model, controller, service, dan repository.
+Repository ini ditujukan untuk pengembangan BE (Backend Final Project BINAR) Adapun pembagian tugas sebagai berikut :
+1. Pengerjaan Middleware dan Auth beserta seluk beluknya (Buat repository, service, dan controller saja)=> Syaifudin
+2. Pengerjaan Role CRUD data system admin dan filter ticket (Buat repository, service, dan controller saja) => Farros
+3. Pengerjaan Role Pembelian dan cart / waiting list (Buat repository, service, dan controller saja)=> Fikri Fahrezi
+4. Penggabungan menjadi endpoint => Syaifudin (sementara)
 
-## Getting Started
+Untuk dapat menjalankan repo ini pertama kali, lakukan perintah :
+1. Buat database postgresql bernama final_proj_development
+2. Jalankan perintah Sequelize db:migrate
+3. Jalankan perintah Dequelize db:seed:all
 
-Untuk mulai membuat sebuah implementasi dari HTTP Server, mulainya menginspeksi file [`app/index.js`](./app/index.js), dan lihatlah salah satu contoh `controller` yang ada di [`app/controllers/mainController.js`](./app/controllers/mainController.js)
-
-Lalu untuk menjalankan development server, kalian tinggal jalanin salah satu script di package.json, yang namanya `develop`.
-
-```sh
-yarn develop
-```
-
-## Database Management
-
-Di dalam repository ini sudah terdapat beberapa script yang dapat digunakan dalam memanage database, yaitu:
-
-- `yarn db:create` digunakan untuk membuat database
-- `yarn db:drop` digunakan untuk menghapus database
-- `yarn db:migrate` digunakan untuk menjalankan database migration
-- `yarn db:seed` digunakan untuk melakukan seeding
-- `yarn db:rollback` digunakan untuk membatalkan migrasi terakhir
+NB : Jika perintah 2 & 3 gagal, coba dengan sequelize (huruf "S" jadi kecil "s")
