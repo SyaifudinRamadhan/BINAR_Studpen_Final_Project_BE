@@ -1,11 +1,21 @@
-const { carts } = require('../models');
+const { Carts } = require('../models');
 
 module.exports = {
   create(createArgs) {
-    return carts.create(createArgs);
+    return Carts.create(createArgs);
   },
 
   findAll() {
-    return carts.findAll();
+    return Carts.findAll();
+  },
+  delete(id) {
+    return Carts.update(
+      {
+        deleted: true,
+      },
+      {
+        where: { id },
+      }
+    );
   },
 };

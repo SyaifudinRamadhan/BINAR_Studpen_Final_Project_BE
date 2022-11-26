@@ -21,8 +21,10 @@ apiRouter.get('/api/v1/who-am-i', ctrl.middleware.isLogin, ctrl.api.v1.whoAmI);
 apiRouter.put('/api/v1/update-profile', ctrl.middleware.isLogin, uploadUser.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.updateUser, ctrl.api.v1.updateProfile);
 
 // Route carts
-apiRouter.post('/api/v1/carts', controllers.api.v1.carts.create);
 apiRouter.get('/api/v1/carts', ctrl.api.v1.carts.list);
+apiRouter.post('/api/v1/carts', ctrl.api.v1.carts.create);
+apiRouter.delete('/api/v1/carts/:id', ctrl.api.v1.carts.deleteCart);
+
 // Route untuk admin
 apiRouter.delete('/api/v1/delete-user', ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser);
 /**
