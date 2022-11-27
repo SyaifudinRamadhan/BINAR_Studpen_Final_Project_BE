@@ -15,4 +15,12 @@ module.exports = {
       throw err;
     }
   },
+  async deleteCart(req) {
+    try {
+      let deleted = await cartsRepository.delete(req.carts.id);
+      return { deleted };
+    } catch (err) {
+      throw err;
+    }
+  },
 };

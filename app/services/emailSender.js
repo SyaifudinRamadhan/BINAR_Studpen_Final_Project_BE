@@ -15,7 +15,6 @@ let transporter = nodemailer.createTransport(
         }
     }
 )
-
 // point to template folder
 const handlebarOption = {
     viewEngine: {

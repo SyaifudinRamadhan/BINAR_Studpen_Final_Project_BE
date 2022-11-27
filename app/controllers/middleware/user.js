@@ -36,7 +36,7 @@ module.exports = {
         next()
     },
     forgotPass(req, res, next){
-        if(req.body.email === undefined){
+        if(req,body.email === undefined){
             res.status(404).json({errors: ["Field email wajib diisi"]})
             return
         }
@@ -88,28 +88,28 @@ module.exports = {
     verifyRegister(req, res, next){
         verifyRegister(req).then(data => {
             if(data.error){
-                req.error = {errors: [data.msg]}
+                req.error = data.msg
                 next()
             }else{
                 // res.status(200).json(data)
                 next()
             }
         }).catch(errors => {
-            req.error = {errors: [errors]}
+            req.error = errors
             next()
         })
     },
     verifyResetPass(req, res, next){
         verifyResetPass(req).then(data => {
             if(data.error){
-                req.error = {errors: [data.msg]}
+                req.error = data.msg
                 next()
             }else{
                 // res.status(200).json(data)
                 next()
             }
         }).catch(errors => {
-            req.error = {errors: [errors]}
+            req.error = errors
             next()
         })
     }
