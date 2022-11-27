@@ -36,7 +36,7 @@ module.exports = {
         next()
     },
     forgotPass(req, res, next){
-        if(req,body.email === undefined){
+        if(req.body.email === undefined){
             res.status(404).json({errors: ["Field email wajib diisi"]})
             return
         }

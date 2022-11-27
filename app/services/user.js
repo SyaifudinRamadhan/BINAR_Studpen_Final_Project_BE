@@ -129,6 +129,7 @@ module.exports = {
 
         try {
             let user = await users.findAll(args)
+            console.log(args, user);
             if (user.length > 0) {
                 let check = undefined
                 for (let i = 0; i < user.length; i++) {
