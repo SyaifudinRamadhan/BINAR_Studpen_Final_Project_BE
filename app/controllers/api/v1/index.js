@@ -5,10 +5,10 @@
 
 // const postController = require("./postController");
 
-const {login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI} = require('./user');
+const {login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI, verifyRegister, verifyForgotPass, forgotPassword} = require('./user');
 const carts = require('./carts');
 
 module.exports = {
-  login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI, carts
+  login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI, carts, verifyRegister, verifyForgotPass, forgotPassword
 };
 

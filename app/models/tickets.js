@@ -31,7 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     no_chair: DataTypes.INTEGER,
     type: DataTypes.STRING,
     trip_type: DataTypes.STRING,
-    deleted: DataTypes.BOOLEAN
+    deleted: DataTypes.BOOLEAN,
+    logo: DataTypes.STRING,
+    flight_number: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Tickets',
