@@ -4,7 +4,7 @@ info:
   version: 0.1.0
 servers:
 - description: Mock Server
-  url: https://binarstudpenfinalprojectbe-production
+  url: https://binarstudpenfinalprojectbe-production.up.railway.app/
 tags:
 - name: Airplane Ticket
   description: Contain every CRUD, authentication, and authorization operation about Airplane Tikcet Resource
