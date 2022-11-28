@@ -747,7 +747,7 @@ components:
               title:
                 type: string
                 example: Mr
-              photo:
+              image:
                 type: string
                 format: binary
 
