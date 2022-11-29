@@ -33,7 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     trip_type: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,
     logo: DataTypes.STRING,
-    flight_number: DataTypes.STRING
+    flight_number: DataTypes.STRING,
+    class: DataTypes.STRING,
+    estimated_up_dest: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Tickets',

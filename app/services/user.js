@@ -118,6 +118,7 @@ async function register(req, withGoogle = false) {
 // Error return wajib pakai code
 module.exports = {
     async login(req) {
+        console.log(req.body, "Login masuk service");
         let email = req.body.email;
         let username = req.body.username;
         let args = {};
@@ -145,6 +146,7 @@ module.exports = {
                     return { error: 403, msg: "Password tidak sesuai" }
                 }
             } else {
+                console.log("Username tidak tersedia");
                 return { error: 404, msg: "Username tidak tersedia" }
             }
         } catch (error) {

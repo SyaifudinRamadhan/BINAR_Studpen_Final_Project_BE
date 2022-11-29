@@ -3,6 +3,7 @@ const {isLogin, isAdmin, getUser, verifyRegister, verifyResetPass} = require('..
 module.exports = {
     login(req, res, next){
         if((req.body.username === undefined && req.body.email === undefined) || req.body.password === undefined){
+            console.log("Usernme / email wajib diinputkan");
             res.status(404).json({errors: ["Usernme / email wajib diinputkan"]})
             return
         }
