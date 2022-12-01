@@ -3,9 +3,10 @@
  * @author BINAR_C7
  */
 
-const api = require("./api");
+const api = require('./api');
 const middleware = require('./middleware');
 
 module.exports = {
-  api, middleware
+  api,
+  middleware,
 };

@@ -1,8 +1,17 @@
 const cartsRepository = require('../repositories/carts');
 
 module.exports = {
-  create(requestBody) {
-    return cartsRepository.create(requestBody);
+  async create(req) {
+    // return cartsRepository.create(requestBody);
+    try {
+      const carts = await cartsRepository.create(req);
+      return {
+        // deleted: false,
+        data: carts,
+      };
+    } catch (err) {
+      throw err;
+    }
   },
 
   async list() {
@@ -10,17 +19,32 @@ module.exports = {
       const carts = await cartsRepository.findAll();
       return {
         data: carts,
+        // id: carts.id,
+        // user_id: carts.user_id,
+        // ticket_id: carts.ticket_id,
+        // status: carts.status,
+        // deleted: false,
       };
     } catch (err) {
       throw err;
     }
   },
-  async deleteCart(req) {
+  async delete(id) {
     try {
-      let deleted = await cartsRepository.delete(req.carts.id);
+      let deleted = await cartsRepository.delete(id);
       return { deleted };
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.log(error);
+      return { error: 400, msg: error ? error : 'Bad request server function' };
     }
   },
+  // async delete(id) {
+  //   try {
+  //     let deleted = await cartsRepository.delete(id);
+  //     return { deleted };
+  //   } catch (error) {
+  //     console.log(error);
+  //     return { error: 400, msg: error ? error : 'Bad request server function' };
+  //   }
+  // },
 };
