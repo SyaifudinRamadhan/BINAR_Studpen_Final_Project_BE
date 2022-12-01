@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     count: DataTypes.INTEGER,
     token_trx: DataTypes.STRING,
     give_to: DataTypes.STRING,
-    status: DataTypes.STRING
+    status: DataTypes.STRING,
+    deleted: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Transactions',

@@ -7,7 +7,7 @@ module.exports = {
   onLost(req, res) {
     res.status(404).json({
       status: "FAIL",
-      message: "Route not found!",
+      message: "Route not found! (NB: Ini adalah tempat redirect verifikasi sementaranya. Nunggu bagian FE selesai dan dihosting)",
     });
   },
 

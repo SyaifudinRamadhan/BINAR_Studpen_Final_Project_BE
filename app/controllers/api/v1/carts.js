@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 const cartService = require('../../../service/carts');
 // const { deleteCart } = require('../../../service/carts');
+=======
+const cartService = require('../../../services/carts');
+>>>>>>> 6bc0ca43e1dbe096be2b7064140786925837dbf5
 
 module.exports = {
   async list(req, res) {

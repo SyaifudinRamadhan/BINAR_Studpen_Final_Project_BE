@@ -1,11 +1,20 @@
 const express = require('express');
 const ctrl = require('../app/controllers');
 const path = require('path');
-const { uploadUser } = require('../app/controllers/middleware/upload');
+const { uploadUser } = require("../app/controllers/middleware/upload");
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const cors = require('cors');
+
+const swaggerDocument = YAML.load(path.join(__dirname, '../openapi.yaml'));
 
 const apiRouter = express.Router();
 
+apiRouter.use(cors());
+
 apiRouter.use(express.static(path.join(__dirname, '../bin/public')));
+apiRouter.use('/', swaggerUi.serve);
+apiRouter.get('/', swaggerUi.setup(swaggerDocument));
 /**
  * TODO: Implement your own API
  *       implementations
@@ -32,15 +41,22 @@ apiRouter.put('/api/v1/transactions/:id', ctrl.api.v1.transactions.update);
 apiRouter.delete('/api/v1/transactions/:id', ctrl.api.v1.transactions.destroy);
 
 // Route untuk admin
-apiRouter.delete('/api/v1/delete-user', ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser);
+apiRouter.delete("/api/v1/:id/delete-user", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser)
+
+// Route verifikasi
+apiRouter.post("/api/v1/reset-password", ctrl.middleware.forgotPass, ctrl.api.v1.forgotPassword)
+apiRouter.get("/api/v1/:token/verify-result-register", ctrl.middleware.verifyRegister, ctrl.api.v1.verifyRegister);
+apiRouter.get("/api/v1/:email/verify-reset-password", ctrl.middleware.verifyResetPass, ctrl.api.v1.verifyForgotPass);
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
  */
 
-apiRouter.get('/api/v1/errors', () => {
-  throw new Error('The Industrial Revolution and its consequences have been a disaster for the human race.');
-});
+apiRouter.get("/api/v1/errors", () => {
+  throw new Error(
+    "The Industrial Revolution and its consequences have been a disaster for the human race. (NB: Ini adalah tempat redirect verifikasi sementaranya. Nunggu bagian FE selesai dan dihosting)"
+  )
+})
 
 apiRouter.use(ctrl.api.main.onLost);
 apiRouter.use(ctrl.api.main.onError);

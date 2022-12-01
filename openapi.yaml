@@ -1,0 +1,755 @@
+openapi: 3.0.0
+info:
+  title: myAirfare CRUD and authorizations
+  version: 0.1.0
+servers:
+- description: Mock Server
+  url: https://binarstudpenfinalprojectbe-production.up.railway.app
+tags:
+- name: Airplane Ticket
+  description: Contain every CRUD, authentication, and authorization operation about Airplane Tikcet Resource
+paths:
+  /api/v1/login:
+    post:
+      operationId: signinSystem
+      tags:
+      - Authentication
+      requestBody:
+        $ref: "#/components/requestBodies/signinRequest"
+      responses:
+        "200":
+          description: Ini adalah hasil respon setelah login / sign in berhasil
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/signin"
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user belum aktif"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user tidak ditemukan"]
+
+  /api/v1/register:
+    post:
+      operationId: signupSystem
+      tags:
+      - Authentication
+      requestBody:
+        $ref: "#/components/requestBodies/signupRequest"
+      responses:
+        "201":
+          description: Ini hasil respon jika register berhasil disimpan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZWU4MzFiMjktNDdlMy00OTVmLTgyYjktZTQ1Nzk3MDQ0ZDg5IiwiaWF0IjoxNjY2MTkwNTYwfQ.3ENp4q7Js-oJsyVSuLMUGEXlZZf4T-CRMOxjiDaBDYo"
+                  user:
+                    $ref: "#/components/schemas/userDataBasic"
+        "400":
+          description: Ini hasil respon jika proses register gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+
+        "403":
+          description: Ini hasil repon error akun user sudah pernah terdaftar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Username / email sudah terdaftar"]
+
+        "404":
+          description: Ini hasil repon error field data register ada yang kosong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Semua field wajib diisi"]
+
+  /api/v1/loginRegGoogle:
+    post:
+      operationId: signupGoogleSystem
+      tags:
+      - Authentication
+      requestBody:
+        description: Endpoint ini memerlukan request body google token atau credential login user
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  example: "eyJhbGciOiJSUzI1NiIsImtpZCI6IjI3Yjg2ZGM2OTM4ZGMzMjdiMjA0MzMzYTI1MGViYjQzYjMyZTRiM2MiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2NjkyNzY1MjMsImF1ZCI6IjEwNzI1MTI0ODI1MzMtZnZqNjY4MjYxMHRqaGdzbXUwNmkxcjVtcmswcmV2b2UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTI2NjgwNDEwOTQyMzg4MDYzMDYiLCJlbWFpbCI6InN5YWlmdWRpbnJhbWFkaGFuQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhenAiOiIxMDcyNTEyNDgyNTMzLWZ2ajY2ODI2MTB0amhnc211MDZpMXI1bXJrMHJldm9lLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwibmFtZSI6IkFobWFkIFJhbWFkaGFuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FMbTV3dTJLN3oxVTdGYlVHY2M5Sm83QkM1ZjduRTgtUFowVFUyblJTV3dKPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkFobWFkIiwiZmFtaWx5X25hbWUiOiJSYW1hZGhhbiIsImlhdCI6MTY2OTI3NjgyMywiZXhwIjoxNjY5MjgwNDIzLCJqdGkiOiI1YTJmM2U5YWMwNzNjYmVmZWNmZWJmMzY5NWUwNGRiN2JmNDFiODZkIn0.bMyVr8MKYkpVPRG7by1pQlhtKPVR_1PHjY44Vn1tYPdWJIDBbOWPcK8WnbgOrF7xrfGic8Nsw-fHY46KFjLHF72-ewuIqXO7BdW9GHXLKQhTG0MBk8BGJxWQozXzxGXZiYhf-6rEIVE9Y4I7qDZqahm_9KSTIqP72zloPEMeQZLM-XMz2iNnSgUhTZaQ8TPJoIj6dlSbQv7yg0jxma68iSmTJuTmg8YhW-yDAmQwB9lHiojfnSBftCpj_PtTdW5ZTVO-qw0mk7XsatZdGDZ_o19v68TDo3q3z-HfzLU9OHCrzOlQ6f31Ds6w9QqCIh7vA3HaZ8e9zr_-aqgFz4MdUg"
+      responses:
+        "200":
+          description: Ini hasil respon jika register berhasil disimpan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZWU4MzFiMjktNDdlMy00OTVmLTgyYjktZTQ1Nzk3MDQ0ZDg5IiwiaWF0IjoxNjY2MTkwNTYwfQ.3ENp4q7Js-oJsyVSuLMUGEXlZZf4T-CRMOxjiDaBDYo"
+                  user:
+                    $ref: "#/components/schemas/userDataBasic"
+
+
+        "400":
+          description: Ini hasil respon jika proses register gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user belum aktif"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user tidak ditemukan"]
+
+  /api/v1/update-profile:
+    put:
+      operationId: updateProfile
+      description: Enpoint dengan tags user authorization adalah endpoint yang dapat diakses oleh semua access level mulai dari member sampai admin
+      tags:
+      - All User Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
+      requestBody:
+        $ref: "#/components/requestBodies/updateUserRequest"
+      responses:
+        "200":
+          description: "Ini hasil respon edit profil jika request update berhasil"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/update"
+
+        "400":
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user belum aktif / verifikasi atau saat mengubah akun user dengan kondisi nama akun / email sudah ada / terdaftar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang,..."]
+
+
+        "404":
+          description: Ini hasil respon error field wajib tidak diisi atau saat konfirmasi password tidak sesuai
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Semua field wajib diisi / Konfirmasi password tidak sesuai"]
+
+  /api/v1/who-am-i:
+    get:
+      operationId: getProfileData
+      description: Enpoint dengan tags user authorization adalah endpoint yang dapat diakses oleh semua access level mulai dari member sampai admin
+      tags:
+      - All User Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
+      responses:
+        "200":
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userData"
+
+        "400":
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user belum aktif"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user tidak ditemukan"]
+
+  /api/v1/reset-password:
+    post:
+      operationId: resetPassword
+      description: Endpoint reset password, berfungsi untuk mengirimkan email kepada user tujuan berdasarkan input email dari user. Email akan berisi url untuk me-reset password akun milik user terkait.
+      tags:
+      - Public Authorization
+      requestBody:
+        description: Request menerima data email username dari user yang akan me-rest password akun miliknya
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: syaifudinramadhan@gmail.com
+      responses:
+        "200":
+          description: Ini adalah respon ketika email reset password berhasil dikirim ke email user target
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "Email reset password telah dikirim ke email yang dituju"
+
+        "404":
+          description: Ini hasil repon error field data email target kosong
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Semua field wajib diisi"]
+
+  /api/v1/{id}/delete-user:
+    delete:
+      operationId: removeAccount
+      description: Endpoint removeAccount memiliki fungsi untuk menghapus user di API ini menggunakan soft-delete. Endpoint ini hanya dapat diakses oleh user ber level 0 / admin.
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Endpoint ini menerima request body id dari user tujuan yang akan dihapus
+          example: 50591b6b-6e3f-41f0-b0fc-2001ea529ed6
+
+      responses:
+        "200":
+          description: "Hasil respon berikut adalah contoh request removeAccount yang berhasil dihapus / delete"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/delete"
+        "400":
+          description: Berikut bentuk response kesalahan server / gagal memanggil endpoint removeAccount
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user bukan admin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user bukan admin"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["User tidak ditemukan"]
+
+components:
+  schemas:
+
+    cartData:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8a90d142-6b29-498c-938f-f862203093b7
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        ticket_id:
+          type: string
+          example: a060002b-898f-44e0-b7c7-af508672e486
+        status:
+          type: string
+          example: waiting
+        deleted:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+        updatedAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+
+    cartDataFullRelation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8a90d142-6b29-498c-938f-f862203093b7
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        ticket_id:
+          type: string
+          example: a060002b-898f-44e0-b7c7-af508672e486
+        status:
+          type: string
+          example: waiting
+        deleted:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+        updatedAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+        user:
+          $ref: "#/components/schemas/userDataBasic"
+
+
+    cartDataBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8a90d142-6b29-498c-938f-f862203093b7
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        ticket_id:
+          type: string
+          example: a060002b-898f-44e0-b7c7-af508672e486
+        status:
+          type: string
+          example: waiting
+        deleted:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+        updatedAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+
+
+    userData:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        username:
+          type: string
+          example: admin
+        f_name:
+          type: string
+          example: admin
+        l_name:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@mail.com
+        g_id:
+          type: string
+          example: 1072512482533-fvj6682610tjhgsmu06i1r5mrk0revoe.apps.googleusercontent.com
+        password:
+          type: string
+          example: $2a$10$X7V.FfeIM09h57xISUivxuyaQ3UmjXQcUL.Y6QcgL3icAar5PF4jm
+        access_level:
+          type: integer
+          example: 1
+        active:
+          type: boolean
+          example: true
+        deleted:
+          type: boolean
+          example: false
+        photo:
+          type: string
+          example: /user/avatar_default.png
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: "#/components/schemas/cartDataBasic"
+
+    userDataBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        username:
+          type: string
+          example: admin
+        f_name:
+          type: string
+          example: admin
+        l_name:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@mail.com
+        g_id:
+          type: string
+          example: 1072512482533-fvj6682610tjhgsmu06i1r5mrk0revoe.apps.googleusercontent.com
+        password:
+          type: string
+          example: $2a$10$X7V.FfeIM09h57xISUivxuyaQ3UmjXQcUL.Y6QcgL3icAar5PF4jm
+        access_level:
+          type: integer
+          example: 1
+        active:
+          type: boolean
+          example: true
+        deleted:
+          type: boolean
+          example: false
+        photo:
+          type: string
+          example: /user/avatar_default.png
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+
+    badRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          example: ["(server error ...)"]
+
+    signin:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZWU4MzFiMjktNDdlMy00OTVmLTgyYjktZTQ1Nzk3MDQ0ZDg5IiwiaWF0IjoxNjY2MTkwNTYwfQ.3ENp4q7Js-oJsyVSuLMUGEXlZZf4T-CRMOxjiDaBDYo"
+        user:
+          $ref: "#/components/schemas/userData"
+
+
+    update:
+      type: object
+      properties:
+        update:
+          type: array
+          items:
+            type: integer
+            description: Nilai integer ini adalah jumlah data yang berhasil di update (rows tabel yang terupdate)
+            example: 1
+
+    delete:
+      type: object
+      properties:
+        deleted:
+          type: array
+          items:
+            type: integer
+            description: Nilai integer ini adalah jumlah data yang berhasil di update (rows tabel yang terupdate)
+            example: 1
+
+  requestBodies:
+    signinRequest:
+      description: Ini adalah request body data untuk login user / admin. Gunakan username dan password untuk login di request body ini. Untuk input login, bisa menggunkan username ataupun email. Pilih salah satu
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - username / email
+            - password
+            properties:
+              username:
+                type: string
+                example: user
+              email:
+                type: string
+                example: user@mail.com
+              password:
+                type: string
+                example: p4ssw0rd
+
+    signupRequest:
+      description: Ini adalah request body data untuk register user. Daftarkan username dan password untuk signup di request body ini.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - username
+            - password
+            - first_name
+            - last_name
+            - email
+            - title
+            properties:
+              username:
+                type: string
+                example: user
+              f_name:
+                type: string
+                example: user
+              l_name:
+                type: string
+                example: user
+              email:
+                type: string
+                example: user@mail.com
+              password:
+                type: string
+                example: p4ssw0rd
+              re_type_pass:
+                type: string
+                example: p4ssw0rd
+              title:
+                type: string
+                example: Mr
+    loginWithGoogle:
+      description: Ini adalah request body data untuk register user / admin. Daftarkan username dan password untuk login di request body ini.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - username
+            - password
+            - first_name
+            - last_name
+            - email
+            properties:
+              username:
+                type: string
+                example: user
+              f_name:
+                type: string
+                example: user
+              l_name:
+                type: string
+                example: user
+              email:
+                type: string
+                example: user@mail.com
+              password:
+                type: string
+                example: p4ssw0rd
+              re_type_pass:
+                type: string
+                example: p4ssw0rd
+              title:
+                type: string
+                example: Mr
+
+    updateUserRequest:
+      description: Ini adalah request body data untuk update user / admin. Ubah data profile di request body ini. Semua field update profil, tidak wajib diisi untuk field password, re-type password dan photo.
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+            - username
+            - l_name
+            - f_name
+            - email
+            - title
+
+            properties:
+              username:
+                type: string
+                example: user
+              f_name:
+                type: string
+                example: user
+              l_name:
+                type: string
+                example: user
+              email:
+                type: string
+                example: user@mail.com
+              password:
+                type: string
+                example: p4ssw0rd
+              re_type_pass:
+                type: string
+                example: p4ssw0rd
+              title:
+                type: string
+                example: Mr
+              image:
+                type: string
+                format: binary
+
+
+
