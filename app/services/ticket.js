@@ -27,7 +27,7 @@ module.exports = {
             deleted: false,
             logo: req.body.image,
             estimated_up_dest: req.body.estimated_up_dest,
-            class: req.body.class
+            class: req.body.kelas
         }
         // Prosws pembuatan data fiel flight_number
         let arrAirline = args.name.split('')
@@ -63,7 +63,7 @@ module.exports = {
             deleted: false,
             logo: req.body.image,
             estimated_up_dest: req.body.estimated_up_dest,
-            class: req.body.class
+            class: req.body.kelas
         }
         
         // Prosws pembuatan data fiel flight_number

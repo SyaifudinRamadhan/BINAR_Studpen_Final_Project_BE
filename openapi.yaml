@@ -339,7 +339,7 @@ paths:
         schema:
           type: string
           example: 2022-12-09T10:00:00.000Z
-      - name: class
+      - name: kelas
         in: query
         description: parameter countPeople adalah parameter untuk filter kelas tiket yang diinginkkan user
         required: true
@@ -957,7 +957,7 @@ components:
         flight_number:
           type: string
           example: CK 507
-        class:
+        kelas:
           type: string
           example: Economy
         estimated_up_dest:
@@ -1013,7 +1013,7 @@ components:
         flight_number:
           type: string
           example: CK 507
-        class:
+        kelas:
           type: string
           example: Economy
         estimated_up_dest:
@@ -1213,7 +1213,7 @@ components:
             - price
             - no_chair
             - estimated_up_dest
-            - class
+            - kelas
             - flightNumber
             - type_ticket
             properties:
@@ -1245,7 +1245,7 @@ components:
               flightNumber:
                 type: string
                 example: CK 507
-              class:
+              kelas:
                 type: string
                 example: Economy
               estimated_up_dest:
@@ -1268,7 +1268,7 @@ components:
             - no_chair
             - image
             - estimated_up_dest
-            - class
+            - kelas
             - flightNumber
             - type_ticket
             properties:
@@ -1300,7 +1300,7 @@ components:
               flightNumber:
                 type: string
                 example: CK 507
-              class:
+              kelas:
                 type: string
                 example: Economy
               estimated_up_dest:

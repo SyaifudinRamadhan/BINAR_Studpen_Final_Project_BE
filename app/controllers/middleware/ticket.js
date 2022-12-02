@@ -12,7 +12,7 @@ module.exports = {
             req.body.type_ticket == undefined ||
             req.file == undefined ||
             req.body.estimated_up_dest == undefined ||
-            req.body.class == undefined ||
+            req.body.kelas == undefined ||
             req.body.flightNumber == undefined ||
             req.body.image == undefined
         ) {
@@ -31,7 +31,7 @@ module.exports = {
             req.body.no_chair == undefined ||
             req.body.type_ticket == undefined ||
             req.body.estimated_up_dest == undefined ||
-            req.body.class == undefined ||
+            req.body.kelas == undefined ||
             req.body.flightNumber == undefined
         ) {
             res.status(403).json({ errors: ["Semua field tambah tiket wajib diisi"] })
