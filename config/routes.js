@@ -1,7 +1,7 @@
 const express = require('express');
 const ctrl = require('../app/controllers');
 const path = require('path');
-const { uploadUser } = require("../app/controllers/middleware/upload");
+const { uploadUser, uploadTicket } = require("../app/controllers/middleware/upload");
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const cors = require('cors');
@@ -23,7 +23,10 @@ apiRouter.get('/', swaggerUi.setup(swaggerDocument));
 apiRouter.post('/api/v1/login', ctrl.middleware.login, ctrl.api.v1.login);
 apiRouter.post('/api/v1/register', ctrl.middleware.register, ctrl.api.v1.register);
 apiRouter.post('/api/v1/loginRegGoogle', ctrl.api.v1.loginRegGoogle);
+
 // Route untuk umum
+apiRouter.get("/api/v1/filter-ticket", ctrl.middleware.filterForm, ctrl.api.v1.filter)
+apiRouter.get("/api/v1/get-schedule", ctrl.middleware.scheduleForm, ctrl.api.v1.getSchedule)
 
 // Route untuk user login
 apiRouter.get('/api/v1/who-am-i', ctrl.middleware.isLogin, ctrl.api.v1.whoAmI);
@@ -36,6 +39,10 @@ apiRouter.delete('/api/v1/carts/:id', ctrl.api.v1.carts.deleteCart);
 
 // Route untuk admin
 apiRouter.delete("/api/v1/:id/delete-user", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser)
+
+apiRouter.post("/api/v1/ticket", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.createTicketForm, ctrl.api.v1.createTicket)
+apiRouter.put("/api/v1/ticket/:id/update", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getTicket, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.updateTicketForm, ctrl.api.v1.updateTicket)
+apiRouter.delete("/api/v1/ticket/:id/delete", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getTicket, ctrl.api.v1.deleteTicket)
 
 // Route verifikasi
 apiRouter.post("/api/v1/reset-password", ctrl.middleware.forgotPass, ctrl.api.v1.forgotPassword)

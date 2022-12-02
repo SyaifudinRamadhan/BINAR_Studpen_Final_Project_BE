@@ -6,16 +6,16 @@ const pubDir = path.join(__dirname, '../../../bin/public');
 
 const uploadHandler = (req, res, next)=>{
     if(req.file != undefined){
-        if(req.file.mimetype == 'image/jpeg'){
+        if(req.file.mimetype == "image/png" || req.file.mimetype == "image/jpg" || req.file.mimetype == "image/jpeg"){
             if((req.user == undefined && req.pathDir == 'user') || (req.ticket == undefined && req.pathDir == 'ticket')){
                 req.body.image = `/${req.pathDir}/${req.file.filename}`;
                 req.msg = 'New uploaded file success';
             }else{
-                if(req.user){
+                if(req.pathDir == 'user'){
                     req.user.photo == '/user/avatar_default.png' ? '' : fs.rm(path.join(pubDir,req.user.photo), (err) => {
                         console.log(err);
                     });
-                }else if(req.ticket){
+                }else if(req.pathDir == 'ticket'){
                     req.ticket.logo == '/ticket/ticket_default.jpg' ? '' : fs.rm(path.join(pubDir,req.ticket.logo), (err) => {
                         console.log(err);
                     });
@@ -28,10 +28,10 @@ const uploadHandler = (req, res, next)=>{
             req.msg = 'Uploaded file must be image/jpg/png';
         }
     }else{
-        if(req.user){
+        if(req.pathDir == 'user'){
             req.user == undefined ? req.body.image = '' : req.body.image = req.user.photo;
-        }else if(req.ticket){
-            req.ticket == undefined ? req.body.image = '' : req.body.image = req.ticket.logo;
+        }else if(req.pathDir == 'ticket'){
+            req.ticket == undefined ? req.body.image = undefined : req.body.image = req.ticket.logo;
         }
         req.msg = 'No uploaded file detected';
     }

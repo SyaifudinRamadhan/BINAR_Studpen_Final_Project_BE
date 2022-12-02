@@ -4,7 +4,7 @@ info:
   version: 0.1.0
 servers:
 - description: Mock Server
-  url: https://binarstudpenfinalprojectbe-production.up.railway.app
+  url: url: https://binarstudpenfinalprojectbe-production.up.railway.app
 tags:
 - name: Airplane Ticket
   description: Contain every CRUD, authentication, and authorization operation about Airplane Tikcet Resource
@@ -304,6 +304,144 @@ paths:
                     type: string
                     example: ["Akses dilarang, akun user tidak ditemukan"]
 
+  /api/v1/filter-ticket:
+    get:
+      operationId: ticketFilterPublic
+      description: Endpoint ini bertujuan untuk memfilter data pencarian tiket untuk pembelian oleh user. FIlter ini menerima parameter lebih kompleks dibandingkan filter data untuk list scehdu;e / jadwal
+      tags:
+      - Public Authorization
+      parameters:
+      - name: from
+        in: query
+        description: Parameter from menunjukkan dari nama kota / bandara asal penerbangan yang ingin di filter
+        required: true
+        schema:
+          type: string
+          example: Surabaya
+      - name: destintion
+        in: query
+        description: Parameter ini menunjukkan ke kota / bandara tujuan mana tiket yang ingin dicari
+        required: true
+        schema:
+          type: string
+          example: Ngurah Rai
+      - name: depart
+        in: query
+        description: Parameter depart merupakan params kapan waktu keberangkatan yang dicari. Depart bertipe data string dengan format datetime. Namun lebih baik jika mengirim data berformat datetime secara langsung ke params ini
+        required: true
+        schema:
+          type: string
+          example: 2022-12-09T10:00:00.000Z
+      - name: return
+        in: query
+        description: Parameter depart merupakan params kapan waktu kepulangan dari bepergian yang dicari (pencarian tiket untuk pulang pergi sekaligus). Depart bertipe data string dengan format datetime. Namun lebih baik jika mengirim data berformat datetime secara langsung ke params ini
+        required: false
+        schema:
+          type: string
+          example: 2022-12-09T10:00:00.000Z
+      - name: class
+        in: query
+        description: parameter countPeople adalah parameter untuk filter kelas tiket yang diinginkkan user
+        required: true
+        schema:
+          type: string
+          example: Ekonomi
+      responses:
+        "200":
+          description: "Berikut adalah hasil response dari filter data tiket dalam bentuk array object"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickets:
+                    type: object
+                    properties:
+                      go:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: "#/components/schemas/ticketRelation"
+
+        "400":
+          description: Ini hasil respon jika proses filter ticket gagal dieksekusi oleh server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "403":
+          description: Ini hasil repon error ketika filed pencarian bertipe required tidak diisi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user belum aktif"]
+
+  /api/v1/get-schedule:
+    get:
+      operationId: ticketFilterSchedule
+      description: Endpoint ini bertujuan untuk memfilter data pencarian tiket untuk melihat jadwal penerbangann. FIlter ini menerima parameter lebih sedikit dibandingkan filter data untuk list penjualan tiket
+      tags:
+      - Public Authorization
+      parameters:
+      - name: from
+        in: query
+        description: Parameter from menunjukkan dari nama kota / bandara asal penerbangan yang ingin di filter
+        required: true
+        schema:
+          type: string
+          example: Surabaya
+      - name: destintion
+        in: query
+        description: Parameter ini menunjukkan ke kota / bandara tujuan mana tiket yang ingin dicari
+        required: true
+        schema:
+          type: string
+          example: Ngurah Rai
+      - name: depart
+        in: query
+        description: Parameter depart merupakan params kapan waktu keberangkatan yang dicari. Depart bertipe data string dengan format datetime. Namun lebih baik jika mengirim data berformat datetime secara langsung ke params ini
+        required: true
+        schema:
+          type: string
+          example: 2022-12-09T10:00:00.000Z
+      responses:
+        "200":
+          description: "Berikut adalah hasil response dari filter data tiket dalam bentuk array object"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tickets:
+                    type: object
+                    properties:
+                      go:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: "#/components/schemas/ticketRelation"
+
+        "400":
+          description: Ini hasil respon jika proses filter ticket gagal dieksekusi oleh server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "403":
+          description: Ini hasil repon error ketika filed pencarian bertipe required tidak diisi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user belum aktif"]
+
   /api/v1/reset-password:
     post:
       operationId: resetPassword
@@ -411,6 +549,199 @@ paths:
                   errors:
                     type: string
                     example: ["User tidak ditemukan"]
+
+  /api/v1/ticket:
+    post:
+      operationId: adminAddTicket
+      tags:
+      - Admin Authorization
+      parameters:
+      - in: header
+        name: x-access-token
+        schema:
+          type: string
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNhYzk1MWQtNmE0YS00ZGYyLTgwMzYtNWY3Nzk0MTNmMzg1IiwiaWF0IjoxNjY2MjAxNzEyfQ.n0dbOB6C8EVRsq4PUiQPoUwXbqOP8G4DWisFSz18myg"
+        required: true
+      requestBody:
+        $ref: "#/components/requestBodies/addTicketRequest"
+      summary: Menmabhakan data tiket penerbangan
+      responses:
+        "200":
+          description: "Ini adalah contoh hasil response dari endpoint tambah tiket ini. Hasil response ini mungkin tidak sepenuhnya benar karena hanya contoh. Bisa dicoba dahulu untuk memastikannya"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ticketBasic"
+        "400":
+          description: Berikut bentuk response kesalahan server / gagal memanggil endpoint tambah data tiket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user bukan admin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user bukan admin"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["User tidak ditemukan"]
+
+  /api/v1/ticket/{id}/update:
+    put:
+      operationId: adminEditTicket
+      tags:
+      - Admin Authorization
+      parameters:
+      - in: header
+        name: x-access-token
+        schema:
+          type: string
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNhYzk1MWQtNmE0YS00ZGYyLTgwMzYtNWY3Nzk0MTNmMzg1IiwiaWF0IjoxNjY2MjAxNzEyfQ.n0dbOB6C8EVRsq4PUiQPoUwXbqOP8G4DWisFSz18myg"
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        required: true
+      requestBody:
+        $ref: "#/components/requestBodies/updateTicketRequest"
+      summary: Mengupdate data tiket penerbangan
+      responses:
+        "200":
+          description: "Ini hasil respon edit profil jika request update berhasil"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/update"
+        "400":
+          description: Berikut bentuk response kesalahan server / gagal memanggil endpoint update data tiket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user bukan admin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user bukan admin"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Tiket tidak ditemukan"]
+
+  /api/v1/ticket/{id}/delete:
+    delete:
+      operationId: adminDeleteTicket
+      tags:
+      - Admin Authorization
+      parameters:
+      - in: header
+        name: x-access-token
+        schema:
+          type: string
+          example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNhYzk1MWQtNmE0YS00ZGYyLTgwMzYtNWY3Nzk0MTNmMzg1IiwiaWF0IjoxNjY2MjAxNzEyfQ.n0dbOB6C8EVRsq4PUiQPoUwXbqOP8G4DWisFSz18myg"
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        required: true
+      summary: Menghapus data tiket penerbangan
+      responses:
+        "200":
+          description: "Ini hasil respon edit profil jika request update berhasil"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/delete"
+        "400":
+          description: Berikut bentuk response kesalahan server / gagal memanggil endpoint tambah data tiket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/badRequest"
+        "401":
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, user tidak terdaftar"]
+
+        "403":
+          description: Ini hasil repon error akun user bukan admin
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Akses dilarang, akun user bukan admin"]
+
+        "404":
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ["Tiket tidak ditemukan"]
 
 components:
   schemas:
@@ -584,6 +915,122 @@ components:
           type: string
           example: 2022-10-18T10:23:07.277Z
 
+    ticketBasic:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        name:
+          type: string
+          example: Citilink
+        from:
+          type: string
+          example: Suarabaya
+        dest:
+          type: string
+          example: Malaysia
+        date_air:
+          type: string
+          example: 2022-12-06T10:00:00.000Z
+        price:
+          type: integer
+          example: 120000
+        no_chair:
+          type: integer
+          example: 25
+        type:
+          type: string
+          description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+          example: Dewasa
+        trip_type:
+          type: string
+          description: Field ini tidak digunakan. Abaikan saja.
+          example: '-'
+        deleted:
+          type: boolean
+          example: false
+        logo:
+          type: string
+          description: field logo, bersikan path dir url. Untuk mengaksesnya tambahkan url origin dari server (url server + path dir url logo)
+          example: /ticket/_image_1669831314308_205258606.jpg
+        flight_number:
+          type: string
+          example: CK 507
+        class:
+          type: string
+          example: Economy
+        estimated_up_dest:
+          type: string
+          description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+          example: 2022-12-06T11:00:00.000Z
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+
+    ticketRelation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        name:
+          type: string
+          example: Citilink
+        from:
+          type: string
+          example: Suarabaya
+        dest:
+          type: string
+          example: Malaysia
+        date_air:
+          type: string
+          example: 2022-12-06T10:00:00.000Z
+        price:
+          type: integer
+          example: 120000
+        no_chair:
+          type: integer
+          example: 25
+        type:
+          type: string
+          description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+          example: Dewasa
+        trip_type:
+          type: string
+          description: Field ini tidak digunakan. Abaikan saja.
+          example: '-'
+        deleted:
+          type: boolean
+          example: false
+        logo:
+          type: string
+          description: field logo, bersikan path dir url. Untuk mengaksesnya tambahkan url origin dari server (url server + path dir url logo)
+          example: /ticket/_image_1669831314308_205258606.jpg
+        flight_number:
+          type: string
+          example: CK 507
+        class:
+          type: string
+          example: Economy
+        estimated_up_dest:
+          type: string
+          description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+          example: 2022-12-06T11:00:00.000Z
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        carts:
+          type: array
+          items:
+            $ref: "#/components/schemas/cartDataBasic"
+
     badRequest:
       type: object
       properties:
@@ -620,6 +1067,7 @@ components:
             type: integer
             description: Nilai integer ini adalah jumlah data yang berhasil di update (rows tabel yang terupdate)
             example: 1
+
 
   requestBodies:
     signinRequest:
@@ -747,9 +1195,156 @@ components:
               title:
                 type: string
                 example: Mr
-              image:
+              photo:
                 type: string
                 format: binary
 
+    updateTicketRequest:
+      description: Ini adalah request body data untuk update tiket. Ubah data ticket di request body ini.
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+            - airline
+            - from_city
+            - destination
+            - date_air
+            - price
+            - no_chair
+            - estimated_up_dest
+            - class
+            - flightNumber
+            - type_ticket
+            properties:
+              airline:
+                type: string
+                example: Citilink
+              from_city:
+                type: string
+                example: Suarabaya
+              destination:
+                type: string
+                example: Malaysia
+              date_air:
+                type: string
+                example: 2022-12-06T10:00:00.000Z
+              price:
+                type: integer
+                example: 120000
+              no_chair:
+                type: integer
+                example: 25
+              type_ticket:
+                type: string
+                description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+                example: Dewasa
+              image:
+                type: string
+                format: binary
+              flightNumber:
+                type: string
+                example: CK 507
+              class:
+                type: string
+                example: Economy
+              estimated_up_dest:
+                type: string
+                description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+                example: 2022-12-06T11:00:00.000Z
 
+    addTicketRequest:
+      description: Ini adalah request body data untuk update tiket. Ubah data ticket di request body ini.
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+            - airline
+            - from_city
+            - destination
+            - date_air
+            - price
+            - no_chair
+            - image
+            - estimated_up_dest
+            - class
+            - flightNumber
+            - type_ticket
+            properties:
+              airline:
+                type: string
+                example: Citilink
+              from_city:
+                type: string
+                example: Suarabaya
+              destination:
+                type: string
+                example: Malaysia
+              date_air:
+                type: string
+                example: 2022-12-06T10:00:00.000Z
+              price:
+                type: integer
+                example: 120000
+              no_chair:
+                type: integer
+                example: 25
+              type_ticket:
+                type: string
+                description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+                example: Dewasa
+              image:
+                type: string
+                format: binary
+              flightNumber:
+                type: string
+                example: CK 507
+              class:
+                type: string
+                example: Economy
+              estimated_up_dest:
+                type: string
+                description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+                example: 2022-12-06T11:00:00.000Z
 
+    addUpdateCarRequest:
+      description: Ini adalah request body untuk mengupdate data ticket. Reuqest body ini bertipe form-data
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Carrera 2765
+              type_car:
+                type: integer
+                example: 2
+              price:
+                type: integer
+                example: 100000
+              available:
+                type: boolean
+                example: true
+              available_at:
+                type: string
+                example: '2022-03-23T15:49:05.563Z'
+              image:
+                type: string
+                format: binary
+              capacity:
+                type: integer
+                example: 6
+              description:
+                type: string
+                example: lorem ipsum dolor sit amet
+              transmission:
+                type: string
+                example: manual
+              year:
+                type: integer
+                example: 2012
+              size:
+                type: string
+                example: medium
