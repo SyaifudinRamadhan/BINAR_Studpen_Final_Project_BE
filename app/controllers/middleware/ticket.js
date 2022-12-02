@@ -43,7 +43,7 @@ module.exports = {
         if (req.query.from == undefined ||
             req.query.destination == undefined ||
             req.query.depart == undefined ||
-            req.query.class == undefined ||
+            req.query.kelas == undefined ||
             req.query.type_passenger == undefined) {
             res.status(403).json({ errors: ["Semua field pencarian tiket wajib diisi"] })
             return

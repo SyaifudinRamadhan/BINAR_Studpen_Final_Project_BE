@@ -957,7 +957,7 @@ components:
         flight_number:
           type: string
           example: CK 507
-        class:
+        kelas:
           type: string
           example: Economy
         estimated_up_dest:
@@ -1013,7 +1013,7 @@ components:
         flight_number:
           type: string
           example: CK 507
-        class:
+        kelas:
           type: string
           example: Economy
         estimated_up_dest:

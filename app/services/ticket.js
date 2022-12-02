@@ -27,7 +27,7 @@ module.exports = {
             deleted: false,
             logo: req.body.image,
             estimated_up_dest: req.body.estimated_up_dest,
-            class: req.body.kelas
+            kelas: req.body.kelas
         }
         // Prosws pembuatan data fiel flight_number
         let arrAirline = args.name.split('')
@@ -63,7 +63,7 @@ module.exports = {
             deleted: false,
             logo: req.body.image,
             estimated_up_dest: req.body.estimated_up_dest,
-            class: req.body.kelas
+            kelas: req.body.kelas
         }
         
         // Prosws pembuatan data fiel flight_number
@@ -103,7 +103,7 @@ module.exports = {
             deleted: false
         }
         if (!schedule) {
-            args.class = req.query.class
+            args.kelas = req.query.kelas
             args.type = {
                 [Sequelize.Op.in]: req.query.type_passenger
             }
