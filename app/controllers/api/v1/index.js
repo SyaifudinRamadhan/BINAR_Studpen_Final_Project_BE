@@ -5,11 +5,11 @@
 
 // const postController = require("./postController");
 
-const {login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI, verifyRegister, verifyForgotPass, forgotPassword} = require('./user');
-const carts = require('./carts');
-const {createTicket, updateTicket, filter, getSchedule, deleteTicket} = require('./ticket')
+const auths = require('./user');
+const carts = require('./carts')
+const transactions = require('./transaction')
+const tickets = require('./ticket')
 
-module.exports = {
-  login, loginRegGoogle, register, updateProfile, deleteUser, whoAmI, carts, verifyRegister, verifyForgotPass, forgotPassword, createTicket, updateTicket, filter, getSchedule, deleteTicket
+module.exports = {auths, carts, transactions, tickets
 };
 

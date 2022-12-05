@@ -16,6 +16,7 @@ module.exports = {
             req.body.flightNumber == undefined ||
             req.body.image == undefined
         ) {
+            console.log(req.body);
             res.status(403).json({ errors: ["Semua field tambah tiket wajib diisi"] })
             return
         }
@@ -34,7 +35,7 @@ module.exports = {
             req.body.kelas == undefined ||
             req.body.flightNumber == undefined
         ) {
-            res.status(403).json({ errors: ["Semua field tambah tiket wajib diisi"] })
+            res.status(403).json({ errors: ["Semua field update tiket wajib diisi"] })
             return
         }
         next()

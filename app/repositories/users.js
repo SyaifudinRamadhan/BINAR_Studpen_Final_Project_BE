@@ -30,7 +30,7 @@ module.exports = {
     findByEmailLike(email) {
         let args = {
             email: {
-                [Op.like]: email
+                [Op.like]: `%${email}%`
             }
         };
         return Users.findAll({ where: args, include: [{ all: true, nested: true }] })

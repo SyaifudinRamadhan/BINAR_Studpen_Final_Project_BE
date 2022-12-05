@@ -33,7 +33,9 @@ module.exports = {
                 return
             }
         }
-        req.body.username = req.body.title + ". " + req.body.username
+        if(req.body.title != ""){
+            req.body.username = req.body.title + ". " + req.body.username
+        }
         next()
     },
     forgotPass(req, res, next){

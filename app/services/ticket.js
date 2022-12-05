@@ -1,5 +1,6 @@
 // Perintah update dan delete, select user dibawahi oleh middleware getUser
 // Perintah read dan create jika membutuhkan akses data user, dilkukan direct ke repo
+// Perintah getAllTIkcet untuk umum
 const { Sequelize } = require("../models")
 const ticketsRepo = require("../repositories/tickets")
 
@@ -14,6 +15,30 @@ const deleteTicket = async (req) => {
 }
 
 module.exports = {
+    async getAllTIkcet(req){
+        try {
+            let tickets = await ticketsRepo.findAll({deleted: false});
+            return {tickets}
+        } catch (error) {
+            console.log(error)
+            return { error: 400, msg: error ? error : "Bad request server function" }
+        }
+    },
+    async getTicket(req){
+        try {
+            let ticket = await ticketsRepo.find({
+                id: req.params.id,
+                deleted: false
+            })
+            if(!ticket){
+                return {error: 404, msg: "Tiket tidak ditemukan"}
+            }
+            return {ticket}
+        } catch (error) {
+            console.log(error)
+            return { error: 400, msg: error ? error : "Bad request server function" }
+        }
+    },
     async create(req) {
         let args = {
             name: req.body.airline,

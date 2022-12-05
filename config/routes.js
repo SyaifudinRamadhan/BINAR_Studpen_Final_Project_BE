@@ -20,38 +20,52 @@ apiRouter.get('/', swaggerUi.setup(swaggerDocument));
  *       implementations
  */
 // Route authentikasi
-apiRouter.post('/api/v1/login', ctrl.middleware.login, ctrl.api.v1.login);
-apiRouter.post('/api/v1/register', ctrl.middleware.register, ctrl.api.v1.register);
-apiRouter.post('/api/v1/loginRegGoogle', ctrl.api.v1.loginRegGoogle);
+apiRouter.post('/api/v1/login', ctrl.middleware.auths.login, ctrl.api.v1.auths.login);
+apiRouter.post('/api/v1/register', ctrl.middleware.auths.register, ctrl.api.v1.auths.register);
+apiRouter.post('/api/v1/loginRegGoogle', ctrl.api.v1.auths.loginRegGoogle);
 
 // Route untuk umum
-apiRouter.get("/api/v1/filter-ticket", ctrl.middleware.filterForm, ctrl.api.v1.filter)
-apiRouter.get("/api/v1/get-schedule", ctrl.middleware.scheduleForm, ctrl.api.v1.getSchedule)
+apiRouter.get("/api/v1/filter-ticket", ctrl.middleware.tickets.filterForm, ctrl.api.v1.tickets.filter)
+apiRouter.get("/api/v1/get-schedule", ctrl.middleware.tickets.scheduleForm, ctrl.api.v1.tickets.getSchedule)
+apiRouter.get("/api/v1/tickets", ctrl.api.v1.tickets.getAllTicket)
+apiRouter.get("/api/v1/:id/ticket", ctrl.api.v1.tickets.getTicket)
 
 // Route untuk user login
-apiRouter.get('/api/v1/who-am-i', ctrl.middleware.isLogin, ctrl.api.v1.whoAmI);
-apiRouter.put('/api/v1/update-profile', ctrl.middleware.isLogin, uploadUser.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.updateUser, ctrl.api.v1.updateProfile);
-
-// Route carts
-apiRouter.get('/api/v1/carts', ctrl.api.v1.carts.list);
-apiRouter.post('/api/v1/carts', ctrl.api.v1.carts.create);
-apiRouter.delete('/api/v1/carts/:id', ctrl.api.v1.carts.deleteCart);
+apiRouter.get('/api/v1/who-am-i', ctrl.middleware.auths.isLogin, ctrl.api.v1.auths.whoAmI);
+apiRouter.put('/api/v1/update-profile', ctrl.middleware.auths.isLogin, uploadUser.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.auths.updateUser, ctrl.api.v1.auths.updateProfile);
 
 // Route untuk admin
-apiRouter.delete("/api/v1/:id/delete-user", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getUser, ctrl.api.v1.deleteUser)
+apiRouter.delete("/api/v1/:id/delete-user", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.middleware.auths.getUser, ctrl.api.v1.auths.deleteUser)
+apiRouter.get("/api/v1/:id/user", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.api.v1.auths.getUser)
+apiRouter.get("/api/v1/users", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.api.v1.auths.getAllUser)
+apiRouter.get("/api/v1/:email/user-email", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.api.v1.auths.findByEmail)
 
-apiRouter.post("/api/v1/ticket", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.createTicketForm, ctrl.api.v1.createTicket)
-apiRouter.put("/api/v1/ticket/:id/update", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getTicket, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.updateTicketForm, ctrl.api.v1.updateTicket)
-apiRouter.delete("/api/v1/ticket/:id/delete", ctrl.middleware.isLogin, ctrl.middleware.isAdmin, ctrl.middleware.getTicket, ctrl.api.v1.deleteTicket)
+apiRouter.post("/api/v1/ticket", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.tickets.createTicketForm, ctrl.api.v1.tickets.createTicket)
+apiRouter.put("/api/v1/ticket/:id/update", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.middleware.tickets.getTicket, uploadTicket.single('image'), ctrl.middleware.uploadHandler, ctrl.middleware.tickets.updateTicketForm, ctrl.api.v1.tickets.updateTicket)
+apiRouter.delete("/api/v1/ticket/:id/delete", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.middleware.tickets.getTicket, ctrl.api.v1.tickets.deleteTicket)
 
 // Route verifikasi
-apiRouter.post("/api/v1/reset-password", ctrl.middleware.forgotPass, ctrl.api.v1.forgotPassword)
-apiRouter.get("/api/v1/:token/verify-result-register", ctrl.middleware.verifyRegister, ctrl.api.v1.verifyRegister);
-apiRouter.get("/api/v1/:email/verify-reset-password", ctrl.middleware.verifyResetPass, ctrl.api.v1.verifyForgotPass);
+apiRouter.post("/api/v1/reset-password", ctrl.middleware.auths.forgotPass, ctrl.api.v1.auths.forgotPassword)
+apiRouter.get("/api/v1/:token/verify-result-register", ctrl.middleware.auths.verifyRegister, ctrl.api.v1.auths.verifyRegister);
+apiRouter.get("/api/v1/:email/verify-reset-password", ctrl.middleware.auths.verifyResetPass, ctrl.api.v1.auths.verifyForgotPass);
 /**
  * TODO: Delete this, this is just a demonstration of
  *       error handler
  */
+
+// ================ Route Testing Transaksi ==============================
+// Route carts
+apiRouter.get('/api/v1/carts', ctrl.api.v1.carts.list);
+apiRouter.post('/api/v1/carts', ctrl.api.v1.carts.create);
+apiRouter.delete('/api/v1/carts/:id', ctrl.api.v1.carts.destroy);
+
+// Route Transaction
+apiRouter.get('/api/v1/transactions', ctrl.api.v1.transactions.list);
+apiRouter.post('/api/v1/transactions', ctrl.api.v1.transactions.create);
+apiRouter.put('/api/v1/transactions/:id', ctrl.api.v1.transactions.update);
+apiRouter.delete('/api/v1/transactions/:id', ctrl.api.v1.transactions.destroy);
+
+// =======================================================================
 
 apiRouter.get("/api/v1/errors", () => {
   throw new Error(

@@ -1,5 +1,6 @@
 // Perintah update dan delete, select user dibawahi oleh middleware getUser
 // Perintah read dan create jika membutuhkan akses data user, dilkukan direct ke repo
+// Perintah getAllUser dan getUser untuk akses admin (middleare isAdmin)
 const users = require('../repositories/users');
 const bcrypt = require('bcryptjs');
 const jwtWeb = require('jsonwebtoken');
@@ -267,5 +268,43 @@ module.exports = {
     // updateProfile() {
 
     // }
-    register
+    register,
+    async getAllUser(req){
+        try {
+            let userDaatas = await users.findAll({
+                deleted: false,
+                access_level: 1
+            })
+            return {users: userDaatas}
+        } catch (error) {
+            console.log(error)
+            return { error: 400, msg: error ? error : "Bad request server function" }
+        }
+    },
+    async getUser(req){
+        try {
+            let user = await users.find({
+                id: req.params.id,
+                deleted: false,
+                access_level: 1
+            })
+            if(!user){
+                return { error: 404, msg: "User tidak ditemukan" }
+            }
+            return {user}
+        } catch (error) {
+            console.log(error);
+            return { error: 400, msg: error ? error : "Bad request server function" }
+        }
+    },
+    async findByEmail(req){
+        try {
+            let user = await users.findByEmailLike(req.params.email
+                )
+            return {user}
+        } catch (error) {
+            console.log(error);
+            return { error: 400, msg: error ? error : "Bad request server function" }
+        }
+    }
 }

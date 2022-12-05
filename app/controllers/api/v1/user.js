@@ -1,4 +1,4 @@
-const {login, register, loginRegGoogle, forgotPassword, verifyForgotPass, verifyRegister, updateUser, deleteUser} = require('../../../services/user');
+const {login, register, loginRegGoogle, forgotPassword, verifyForgotPass, verifyRegister, updateUser, deleteUser, getAllUser, getUser, findByEmail} = require('../../../services/user');
 const dotenv = require('dotenv')
 
 dotenv.config();
@@ -100,5 +100,38 @@ module.exports = {
         console.log("Masuk controller");
         let msg = forgotPassword(req)
         res.status(200).json(msg)
+    },
+    getAllUser(req, res){
+        getAllUser(req).then(data => {
+            if(data.error){
+                res.status(data.error).json({errors: [data.msg]})
+            }else{
+                res.status(200).json(data)
+            }
+        }).catch(err => {
+            res.status(400).json({errors: [err]})
+        })
+    },
+    getUser(req, res){
+        getUser(req).then(data => {
+            if(data.error){
+                res.status(data.error).json({errors: [data.msg]})
+            }else{
+                res.status(200).json(data)
+            }
+        }).catch(err => {
+            res.status(400).json({errors: [err]})
+        })
+    },
+    findByEmail(req, res){
+        findByEmail(req).then(data => {
+            if(data.error){
+                res.status(data.error).json({errors: [data.msg]})
+            }else{
+                res.status(200).json(data)
+            }
+        }).catch(err => {
+            res.status(400).json({errors: [err]})
+        })
     }
 }

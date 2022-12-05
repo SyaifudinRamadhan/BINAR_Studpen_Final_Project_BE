@@ -54,7 +54,7 @@ module.exports = {
         // Berdasarkan id target (req.body.target)
         // returnnya targetUser
         try {
-            let user = await users.find({ id: req.params.id })
+            let user = await users.find({ id: req.params.id, deleted: false, access_level: 1 })
             if (!user) return { error: 404, msg: "User tidak ditemukan" }
             req.targetUser = user
             return { user }
