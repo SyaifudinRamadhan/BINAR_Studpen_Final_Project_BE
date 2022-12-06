@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Carts, {
+      this.hasMany(models.Transactions, {
         foreignKey: 'user_id',
-        as: 'carts'
+        as: 'trx'
       })
     }
   }
@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     active: DataTypes.BOOLEAN,
     access_level: DataTypes.INTEGER,
     deleted: DataTypes.BOOLEAN,
-    photo: DataTypes.STRING
+    photo: DataTypes.STRING,
+    visa_ID: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Users',

@@ -10,19 +10,22 @@ const cartsRepository = require('../repositories/carts');
 module.exports = {
   async create(req) {
     // return cartsRepository.create(requestBody);
-    let args = {
-      user_id: req.user.id,
-      ticket_id: req.ticket.id,
-      status: "pending",
-      deleted: false
-    };
-    try {
-      const cart = await cartsRepository.create(args);
-      return { cart };
-    } catch (err) {
-      console.log(error)
-      return { error: 400, msg: error ? error : "Bad request server function" }
-    }
+    console.log(req.body.tickets_id, `========================== ${req.body.tickets_id.length} ============`, Array.isArray(req.body.tickets_id));
+    return {carts: req.body.tickets_id}
+    // let args = {
+    //   user_id: req.user.id,
+    //   ticket_id: req.ticket.id,
+    //   status: "pending",
+    //   deleted: false
+    // };
+    // try {
+    //   const cart = await cartsRepository.create(args);
+    //   // Yang belum : Menambhakan notifikasi dengan websocket
+    //   return { cart };
+    // } catch (err) {
+    //   console.log(error)
+    //   return { error: 400, msg: error ? error : "Bad request server function" }
+    // }
   },
   async update(req) {
     try {

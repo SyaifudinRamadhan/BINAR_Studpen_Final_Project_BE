@@ -1,5 +1,4 @@
 const { Carts } = require('../models');
-const { where } = require('sequelize');
 module.exports = {
   create(createArgs) {
     return Carts.create(createArgs);

@@ -55,7 +55,7 @@ apiRouter.get("/api/v1/:email/verify-reset-password", ctrl.middleware.auths.veri
 
 // ================ Route Testing Transaksi ==============================
 // Route carts
-apiRouter.get('/api/v1/carts', ctrl.api.v1.carts.list);
+apiRouter.get('/api/v1/carts', ctrl.middleware.auths.isLogin, ctrl.api.v1.carts.list);
 apiRouter.post('/api/v1/carts', ctrl.api.v1.carts.create);
 apiRouter.delete('/api/v1/carts/:id', ctrl.api.v1.carts.destroy);
 

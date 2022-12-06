@@ -11,9 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Carts, {
-        foreignKey: 'cart_id',
-        as: 'cart'
+      this.belongsTo(models.Users, {
+        foreignKey: 'user_id',
+        as: 'user'
+      })
+      this.hasMany(models.Carts, {
+        foreignKey: 'trx_id',
+        as: 'carts'
       })
       this.hasMany(models.Checkin, {
         foreignKey: 'trx_id',
@@ -22,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transactions.init({
-    cart_id: DataTypes.INTEGER,
+    user_id: DataTypes.INTEGER,
     price: DataTypes.INTEGER,
     count: DataTypes.INTEGER,
     token_trx: DataTypes.STRING,

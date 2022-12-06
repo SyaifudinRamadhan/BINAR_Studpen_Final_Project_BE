@@ -4,7 +4,7 @@ const cartService = require('../../../services/carts');
 module.exports = {
   async list(req, res) {
     try {
-      const carts = await cartService.list();
+      const carts = await cartService.list(req);
       res.status(200).json({
         status: 'Success',
         data: {
@@ -20,8 +20,7 @@ module.exports = {
   },
   async create(req, res) {
     try {
-      const carts = await cartService.create(req.body);
-      console.log(req.body);
+      const carts = await cartService.create(req);
       res.status(201).json({
         status: 'Data have created successfully',
         data: {
