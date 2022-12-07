@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transactions.init({
-    user_id: DataTypes.INTEGER,
+    user_id: DataTypes.UUID,
     price: DataTypes.INTEGER,
     count: DataTypes.INTEGER,
     token_trx: DataTypes.STRING,

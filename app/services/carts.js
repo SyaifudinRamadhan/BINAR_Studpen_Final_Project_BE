@@ -6,34 +6,35 @@
 // create wajib menggunakan middleware isLogin dan getTicket
 // ================================================================
 const cartsRepository = require('../repositories/carts');
+const chairRepo = require('../repositories/chairs_available');
+const transaction = require('../repositories/transactions')
 
 module.exports = {
   async create(req) {
-    // return cartsRepository.create(requestBody);
-    console.log(req.body.tickets_id, `========================== ${req.body.tickets_id.length} ============`, Array.isArray(req.body.tickets_id));
-    return {carts: req.body.tickets_id}
-    // let args = {
-    //   user_id: req.user.id,
-    //   ticket_id: req.ticket.id,
-    //   status: "pending",
-    //   deleted: false
-    // };
-    // try {
-    //   const cart = await cartsRepository.create(args);
-    //   // Yang belum : Menambhakan notifikasi dengan websocket
-    //   return { cart };
-    // } catch (err) {
-    //   console.log(error)
-    //   return { error: 400, msg: error ? error : "Bad request server function" }
-    // }
-  },
-  async update(req) {
+    let tickets = req.body.tickets_id
+    console.log(req.user);
+    let argsTrx = {
+      user_id: req.user.id,
+      price: 0,
+      count: req.body.tickets_id.length,
+      token_trx: "",
+      give_to: req.user.email,
+      status: "pending",
+      deleted: false
+    }
     try {
-      let update = await cartsRepository.update(req.cart.id, {
-        status: "buyed",
-        deleted: true
-      })
-      return { update }
+      let trx = await transaction.create(argsTrx)
+      for (let i = 0; i < tickets.length; i++) {
+        let args = {
+          trx_id: trx.id,
+          ticket_id: tickets[i],
+          status: "pending",
+          deleted: false
+        }
+        await cartsRepository.create(args)
+      }
+      tickets.length > 1 ? trx.trip_type = "round-trip" : trx.trip_type = "one-way"
+      return { wait_list: trx }
     } catch (error) {
       console.log(error)
       return { error: 400, msg: error ? error : "Bad request server function" }
@@ -41,29 +42,41 @@ module.exports = {
   },
   async list(req) {
     try {
-      const carts = await cartsRepository.findAll({
+      const trx = JSON.parse(JSON.stringify(await transaction.findAll({
         user_id: req.user.id,
-        deleted: false
-      });
+        deleted: false,
+        token_trx: "",
+      })));
+      for (let i = 0; i < trx.length; i++) {
+        for (let j = 0; j < trx[i].carts.length; j++) {
+          let chairs = await chairRepo.findAll({ticket_id: trx[i].carts[j].ticket.id, user_id: null})
+          trx[i].carts[j].ticket.available = chairs
+        }
+      }
       return {
-        carts
+        wait_list: trx
       };
     } catch (err) {
       console.log(error)
       return { error: 400, msg: error ? error : "Bad request server function" }
     }
   },
-  async getCart(req){
+  async getCart(req) {
     try {
-      const cart = await cartsRepository.find({
+      const trx = JSON.parse(JSON.stringify(await transaction.find({
         id: req.params.id,
         user_id: req.user.id,
-        deleted: false
-      })
-      if(!cart){
-        return {error: 404, msg: "Cart tidak ditemukan"}
+        deleted: false,
+        token_trx: "",
+      })))
+      if (!trx) {
+        return { error: 404, msg: "Cart tidak ditemukan" }
       }
-      return {cart}
+      for (let j = 0; j < trx.carts.length; j++) {
+        let chairs = await chairRepo.findAll({ticket_id: trx.carts[j].ticket.id, user_id: null})
+        trx.carts[j].ticket.available = chairs
+      }
+      return { wait_list: trx }
     } catch (error) {
       console.log(error)
       return { error: 400, msg: error ? error : "Bad request server function" }
@@ -71,7 +84,9 @@ module.exports = {
   },
   async delete(req) {
     try {
-      let deleted = await cartsRepository.delete(req.cart.id);
+      console.log(req.wait_list);
+      await cartsRepository.destroy({trx_id: req.wait_list.id})
+      let deleted = await transaction.destroy(req.wait_list.id);
       return { deleted };
     } catch (error) {
       console.log(error);

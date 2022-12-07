@@ -21,6 +21,13 @@ module.exports = {
       },
     });
   },
+  destroy(args){
+    return Carts.destroy(
+      {
+        where: args
+      }
+    );
+  },
   delete(id) {
     return Carts.update(
       {

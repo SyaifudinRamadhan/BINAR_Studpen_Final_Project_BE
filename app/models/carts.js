@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Users, {
+      this.belongsTo(models.Transactions, {
         foreignKey: 'trx_id',
         as: 'trx'
       })
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Carts.init({
-    trx_id: DataTypes.UUID,
+    trx_id: DataTypes.INTEGER,
     ticket_id: DataTypes.UUID,
     status: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,

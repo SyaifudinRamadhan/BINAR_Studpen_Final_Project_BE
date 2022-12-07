@@ -1,4 +1,4 @@
-const { Transaction } = require('../models');
+const { Transactions } = require('../models');
 
 module.exports = {
   create(createArgs) {
@@ -9,19 +9,26 @@ module.exports = {
   },
   find(argsWhere) {
     console.log(argsWhere);
-    return Tickets.findOne({ where: argsWhere, include: [{ all: true, nested: true }] })
+    return Transactions.findOne({ where: argsWhere, include: [{ all: true, nested: true }] })
   },
   update(id, args) {
-    return Transaction.update(args, {
+    return Transactions.update(args, {
       where: {
         id,
       },
     });
   },
   delete(id) {
-    return Transaction.update({
+    return Transactions.update({
       deleted: true
     }, {
+      where: {
+        id,
+      }
+    });
+  },
+  destroy(id) {
+    return Transactions.destroy({
       where: {
         id,
       }
