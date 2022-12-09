@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     token_trx: DataTypes.STRING,
     give_to: DataTypes.STRING,
     status: DataTypes.STRING,
-    deleted: DataTypes.BOOLEAN
+    deleted: DataTypes.BOOLEAN,
+    order_id: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Transactions',

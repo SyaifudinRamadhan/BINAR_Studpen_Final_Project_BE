@@ -178,7 +178,7 @@ module.exports = {
         let args = {
             from: req.query.from,
             dest: req.query.destination,
-            date_air: req.query.depart,
+            date_air: {[Sequelize.Op.between]: [req.query.depart+'T00:00:00.000Z', req.query.depart+'T23:59:00.000Z']},
             deleted: false
         }
         if (!schedule) {
@@ -198,7 +198,7 @@ module.exports = {
             }
             console.log(data.go);
             if (req.query.return) {
-                args.date_air = req.query.return
+                args.date_air = {[Sequelize.Op.between]: [req.query.return+'T00:00:00.000Z', req.query.return+'T23:59:00.000Z']}
                 data.return = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
                 for (let i = 0; i < data.return.length; i++) {
                     let chairsFree = await chairRepo.findAll({ticket_id: data.return[i].id, user_id: null})

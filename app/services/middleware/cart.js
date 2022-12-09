@@ -7,7 +7,7 @@ module.exports = {
                 id: req.params.id,
                 user_id: req.user.id,
                 deleted: false,
-                token_trx: "",
+                status: "pending"
             })))
             if (!trx) {
                 return { error: 404, msg: "Cart tidak ditemukan" }

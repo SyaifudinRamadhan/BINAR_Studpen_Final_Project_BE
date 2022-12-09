@@ -12,6 +12,7 @@ const transaction = require('../repositories/transactions')
 module.exports = {
   async create(req) {
     let tickets = req.body.tickets_id
+    if(tickets == undefined) return { error: 403, msg: "Wajib meninputkan array ticket ID" }
     console.log(req.user);
     let argsTrx = {
       user_id: req.user.id,
@@ -45,7 +46,7 @@ module.exports = {
       const trx = JSON.parse(JSON.stringify(await transaction.findAll({
         user_id: req.user.id,
         deleted: false,
-        token_trx: "",
+        status: "pending"
       })));
       for (let i = 0; i < trx.length; i++) {
         for (let j = 0; j < trx[i].carts.length; j++) {
@@ -67,7 +68,7 @@ module.exports = {
         id: req.params.id,
         user_id: req.user.id,
         deleted: false,
-        token_trx: "",
+        status: "pending"
       })))
       if (!trx) {
         return { error: 404, msg: "Cart tidak ditemukan" }

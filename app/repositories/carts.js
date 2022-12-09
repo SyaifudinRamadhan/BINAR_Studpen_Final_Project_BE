@@ -40,4 +40,14 @@ module.exports = {
       }
     );
   },
+  delete2(args) {
+    return Carts.update(
+      {
+        deleted: true,
+      },
+      {
+        where: args
+      }
+    );
+  }
 };
