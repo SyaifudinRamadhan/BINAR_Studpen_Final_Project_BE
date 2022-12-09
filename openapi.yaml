@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: myAirfare CRUD and authorizationstgyuhiuvcyguy
+  title: myAirfare CRUD and authorization
   version: 0.1.0
 servers:
 - description: Mock Server
@@ -1703,15 +1703,17 @@ components:
     addCartsRequest:
       description: Ini adalah request body data untuk update carts. Ubah data carts di request body ini.
       content:
-        multipart/form-data:
+        application/json:
           schema:
             type: object
             required:
             - tickets_id
             properties:
               tickets_id:
-                type: string
-                example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf,50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+                type: array
+                items:
+                  type: string
+                example: [50ca49b3-f3c9-4230-9423-8e4b8257c1bf, 50ca49b3-f3c9-4230-9423-8e4b8257c1bf]
 
     addUpdateCarRequest:
       description: Ini adalah request body untuk mengupdate data ticket. Reuqest body ini bertipe form-data
