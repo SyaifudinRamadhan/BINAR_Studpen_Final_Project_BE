@@ -12,7 +12,7 @@ module.exports = {
      await queryInterface.addColumn(
       'Tickets', 'kelas', {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         defaultValue: 'Economy'
       }
     )

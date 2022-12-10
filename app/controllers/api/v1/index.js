@@ -9,7 +9,8 @@ const auths = require('./user');
 const carts = require('./carts')
 const transactions = require('./transaction')
 const tickets = require('./ticket')
+const addOn = require('./addon')
 
-module.exports = {auths, carts, transactions, tickets
+module.exports = {auths, carts, transactions, tickets, addOn
 };
 

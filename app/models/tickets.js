@@ -11,9 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Carts, {
-        foreignKey: 'ticket_id',
-        as: 'carts'
+      // this.hasMany(models.Carts, {
+      //   foreignKey: 'ticket_id',
+      //   as: 'carts'
+      // }),
+      this.belongsTo(models.Ticket_Classes, {
+        foreignKey: 'kelas',
+        as: 'ticketClass'
+      }),
+      this.belongsTo(models.Type_Passenger, {
+        foreignKey: 'type',
+        as: 'passenger'
       })
     }
   }
@@ -29,12 +37,12 @@ module.exports = (sequelize, DataTypes) => {
     date_air: DataTypes.DATE,
     price: DataTypes.INTEGER,
     no_chair: DataTypes.INTEGER,
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     trip_type: DataTypes.STRING,
     deleted: DataTypes.BOOLEAN,
     logo: DataTypes.STRING,
     flight_number: DataTypes.STRING,
-    kelas: DataTypes.STRING,
+    kelas: DataTypes.INTEGER,
     estimated_up_dest: DataTypes.DATE
   }, {
     sequelize,

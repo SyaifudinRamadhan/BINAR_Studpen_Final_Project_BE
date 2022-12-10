@@ -4,13 +4,15 @@
 const { Sequelize } = require("../models")
 const ticketsRepo = require("../repositories/tickets")
 const chairRepo = require('../repositories/chairs_available')
+const passsengerRepo = require('../repositories/passenger');
+const classRepo = require('../repositories/ticket_class');
 
 const deleteTicket = async (req) => {
     try {
-        let chairsFree = await chairRepo.findAll({ticket_id: req.ticket.id, user_id: null})
-            if((chairsFree.length < req.ticket.no_chair) && (new Date(req.ticket.estimated_up_dest) > new Date())){
-                return { error: 403, msg: 'Dilarang menghapus ticket yang sudah ada pembelinya / Sudah terbeli user' }
-            }
+        let chairsFree = await chairRepo.findAll({ ticket_id: req.ticket.id, user_id: null })
+        if ((chairsFree.length < req.ticket.no_chair) && (new Date(req.ticket.estimated_up_dest) > new Date())) {
+            return { error: 403, msg: 'Dilarang menghapus ticket yang sudah ada pembelinya / Sudah terbeli user' }
+        }
         let deleted = await ticketsRepo.delete(req.ticket.id)
         return { deleted }
     } catch (error) {
@@ -20,31 +22,31 @@ const deleteTicket = async (req) => {
 }
 
 module.exports = {
-    async getAllTIkcet(req){
+    async getAllTIkcet(req) {
         try {
-            let tickets = JSON.parse(JSON.stringify(await ticketsRepo.findAll({deleted: false})));
+            let tickets = JSON.parse(JSON.stringify(await ticketsRepo.findAll({ deleted: false })));
             for (let i = 0; i < tickets.length; i++) {
-                let chairsFree = await chairRepo.findAll({ticket_id: tickets[i].id, user_id: null})
+                let chairsFree = await chairRepo.findAll({ ticket_id: tickets[i].id, user_id: null })
                 tickets[i].available = chairsFree
             }
-            return {tickets}
+            return { tickets }
         } catch (error) {
             console.log(error)
             return { error: 400, msg: error ? error : "Bad request server function" }
         }
     },
-    async getTicket(req){
+    async getTicket(req) {
         try {
             let ticket = JSON.parse(JSON.stringify(await ticketsRepo.find({
                 id: req.params.id,
                 deleted: false
             })))
-            if(!ticket){
-                return {error: 404, msg: "Tiket tidak ditemukan"}
+            if (!ticket) {
+                return { error: 404, msg: "Tiket tidak ditemukan" }
             }
-            let chairsFree = await chairRepo.findAll({ticket_id: ticket.id, user_id: null})
+            let chairsFree = await chairRepo.findAll({ ticket_id: ticket.id, user_id: null })
             ticket.available = chairsFree
-            return {ticket}
+            return { ticket }
         } catch (error) {
             console.log(error)
             return { error: 400, msg: error ? error : "Bad request server function" }
@@ -65,20 +67,27 @@ module.exports = {
             estimated_up_dest: req.body.estimated_up_dest,
             kelas: req.body.kelas
         }
+
         // Prosws pembuatan data fiel flight_number
         let arrAirline = args.name.split('')
         let flightCodeNumber = `${arrAirline[0]}${arrAirline[arrAirline.length - 1]} ${req.body.flightNumber}`
         flightCodeNumber = flightCodeNumber.toUpperCase()
         try {
-            console.log("=========================== MUlai Sini 1 ========================", 
-            {
-                flight_number: flightCodeNumber,
-                from: req.body.from_city,
-                dest: req.body.destination,
-                date_air: req.body.date_air,
-                estimated_up_dest: req.body.estimated_up_dest,
-                deleted: false
-            });
+            // Proses cek type dan kelas tiket
+            let passType = await passsengerRepo.findId(args.type)
+            let classType = await classRepo.findId(args.kelas)
+            if (passType == null || classType == null) {
+                return { error: 404, msg: "Kelas atau jenis penumpang ticket tidak tersedia" }
+            }
+            console.log("=========================== MUlai Sini 1 ========================",
+                {
+                    flight_number: flightCodeNumber,
+                    from: req.body.from_city,
+                    dest: req.body.destination,
+                    date_air: req.body.date_air,
+                    estimated_up_dest: req.body.estimated_up_dest,
+                    deleted: false
+                });
             let tickets = await ticketsRepo.findAll({
                 flight_number: flightCodeNumber,
                 from: req.body.from_city,
@@ -91,12 +100,12 @@ module.exports = {
             if (tickets.length > 0) return { error: 403, msg: 'Dilarang ada nomor penerbngan di lebih dari satu bandara ke tujuan sama di waktu yang sama' }
             args.flight_number = flightCodeNumber
             let ticket = await ticketsRepo.create(args)
-            if(ticket.no_chair > 0){
+            if (ticket.no_chair > 0) {
                 for (let i = 0; i < ticket.no_chair; i++) {
                     await chairRepo.create({
                         ticket_id: ticket.id,
                         user_id: null,
-                        chair_number: i+1
+                        chair_number: i + 1
                     })
                 }
             }
@@ -120,12 +129,18 @@ module.exports = {
             estimated_up_dest: req.body.estimated_up_dest,
             kelas: req.body.kelas
         }
-        
+
         // Prosws pembuatan data fiel flight_number
         let arrAirline = args.name.split('')
         let flightCodeNumber = `${arrAirline[0]}${arrAirline[arrAirline.length - 1]} ${req.body.flightNumber}`
         flightCodeNumber = flightCodeNumber.toUpperCase()
         try {
+            // Proses cek type dan kelas tiket
+            let passType = await passsengerRepo.findId(args.type)
+            let classType = await classRepo.findId(args.kelas)
+            if (passType == null || classType == null) {
+                return { error: 404, msg: "Kelas atau jenis penumpang ticket tidak tersedia" }
+            }
             let tickets = await ticketsRepo.findAll({
                 flight_number: flightCodeNumber,
                 from: req.body.from_city,
@@ -140,19 +155,19 @@ module.exports = {
                 if (tickets[0].id !== req.ticket.id) return { error: 403, msg: 'Dilarang ada nomor penerbngan di lebih dari satu bandara ke tujuan sama di waktu yang sama' }
             }
             console.log(args);
-            let chairsFree = await chairRepo.findAll({ticket_id: req.ticket.id, user_id: null})
-            if(args.no_chair != req.ticket.no_chair){
-                if(chairsFree.length < (req.ticket.no_chair - args.no_chair)){
+            let chairsFree = await chairRepo.findAll({ ticket_id: req.ticket.id, user_id: null })
+            if (args.no_chair != req.ticket.no_chair) {
+                if (chairsFree.length < (req.ticket.no_chair - args.no_chair)) {
                     return { error: 403, msg: 'Dilarang mengurangi kuota kursi yang sudah ditempati / Kuota baru sudah terlampaui' }
-                }else{
+                } else {
                     let abs = Math.abs((req.ticket.no_chair - args.no_chair))
                     let lastNoChair = req.ticket.no_chair
-                    if((req.ticket.no_chair - args.no_chair) > 0){
+                    if ((req.ticket.no_chair - args.no_chair) > 0) {
                         for (let i = 0; i < abs; i++) {
                             await chairRepo.delete(req.ticket.id, lastNoChair)
                             lastNoChair -= 1
                         }
-                    }else if((req.ticket.no_chair - args.no_chair) < 0){
+                    } else if ((req.ticket.no_chair - args.no_chair) < 0) {
                         for (let i = 0; i < abs; i++) {
                             lastNoChair += 1
                             await chairRepo.create({
@@ -178,14 +193,18 @@ module.exports = {
         let args = {
             from: req.query.from,
             dest: req.query.destination,
-            date_air: {[Sequelize.Op.between]: [req.query.depart+'T00:00:00.000Z', req.query.depart+'T23:59:00.000Z']},
+            date_air: { [Sequelize.Op.between]: [req.query.depart + 'T00:00:00.000Z', req.query.depart + 'T23:59:00.000Z'] },
             deleted: false
         }
         if (!schedule) {
-            args.kelas = req.query.kelas
-            args.type = {
-                [Sequelize.Op.in]: req.query.type_passenger
-            }
+            // Mendapatkan ID class dan ID type
+            let passengers = req.query.type_passenger.map(function (x) { return x.toUpperCase(); })
+            let ticketClass = await classRepo.find(req.query.kelas.toUpperCase())
+            let passType = await passsengerRepo.find({ [Sequelize.Op.in]: passengers })
+            console.log(ticketClass, passType);
+            if (ticketClass == null || passType == null) return { error: 404, msg: "Kelas / jenis penumpang tidak ditemukan" }
+            args.kelas = ticketClass.id
+            args.type = passType.id
         }
         try {
             data.go = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
@@ -193,20 +212,20 @@ module.exports = {
             // console.log(data.go[0]);
             // return {res: data.go[0]}
             for (let i = 0; i < data.go.length; i++) {
-                let chairsFree = await chairRepo.findAll({ticket_id: data.go[i].id, user_id: null})
+                let chairsFree = await chairRepo.findAll({ ticket_id: data.go[i].id, user_id: null })
                 data.go[i].available = chairsFree
             }
             console.log(data.go);
             if (req.query.return) {
-                args.date_air = {[Sequelize.Op.between]: [req.query.return+'T00:00:00.000Z', req.query.return+'T23:59:00.000Z']}
+                args.date_air = { [Sequelize.Op.between]: [req.query.return + 'T00:00:00.000Z', req.query.return + 'T23:59:00.000Z'] }
                 data.return = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
                 for (let i = 0; i < data.return.length; i++) {
-                    let chairsFree = await chairRepo.findAll({ticket_id: data.return[i].id, user_id: null})
+                    let chairsFree = await chairRepo.findAll({ ticket_id: data.return[i].id, user_id: null })
                     data.return[i].available = chairsFree
                 }
             }
-            
-            return {tickets : data}
+
+            return { tickets: data }
         } catch (error) {
             console.log(error)
             return { error: 400, msg: error ? error : "Bad request server function" }

@@ -29,7 +29,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       type: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       trip_type: {
         type: Sequelize.STRING

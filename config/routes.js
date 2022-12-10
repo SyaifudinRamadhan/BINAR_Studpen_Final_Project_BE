@@ -38,6 +38,8 @@ apiRouter.get("/api/v1/filter-ticket", ctrl.middleware.tickets.filterForm, ctrl.
 apiRouter.get("/api/v1/get-schedule", ctrl.middleware.tickets.scheduleForm, ctrl.api.v1.tickets.getSchedule)
 apiRouter.get("/api/v1/tickets", ctrl.api.v1.tickets.getAllTicket)
 apiRouter.get("/api/v1/:id/ticket", ctrl.api.v1.tickets.getTicket)
+apiRouter.get("/api/v1/get-all-ticket-type", ctrl.api.v1.addOn.getAllTicketType)
+apiRouter.get("/api/v1/get-all-ticket-class", ctrl.api.v1.addOn.getAllTicketTClass)
 
 //==================================== Route untuk user login ================================
 apiRouter.get('/api/v1/who-am-i', ctrl.middleware.auths.isLogin, ctrl.api.v1.auths.whoAmI);

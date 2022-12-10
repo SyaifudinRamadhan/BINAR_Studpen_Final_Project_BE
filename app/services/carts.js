@@ -49,6 +49,7 @@ module.exports = {
         status: "pending"
       })));
       for (let i = 0; i < trx.length; i++) {
+        trx[i].carts.length > 1 ? trx[i].trip_type = "round-trip" : trx[i].trip_type = "one-way"
         for (let j = 0; j < trx[i].carts.length; j++) {
           let chairs = await chairRepo.findAll({ticket_id: trx[i].carts[j].ticket.id, user_id: null})
           trx[i].carts[j].ticket.available = chairs
@@ -73,6 +74,7 @@ module.exports = {
       if (!trx) {
         return { error: 404, msg: "Cart tidak ditemukan" }
       }
+      trx.carts.length > 1 ? trx.trip_type = "round-trip" : trx.trip_type = "one-way"
       for (let j = 0; j < trx.carts.length; j++) {
         let chairs = await chairRepo.findAll({ticket_id: trx.carts[j].ticket.id, user_id: null})
         trx.carts[j].ticket.available = chairs
