@@ -25,47 +25,43 @@ const update = async (userID = null) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': `Basic ${btoa(process.env.SERVER_KEY + ":")}`
-    },
-    timeout: 60000, //optional
-    httpsAgent: new https.Agent({ keepAlive: true }),
+    }
   }
 
   for (let i = 0; i < allTrxPending.length; i++) {
     let lastCheckout = new Date(allTrxPending[i].updatedAt)
     let now = new Date()
     let url = `${process.env.MID_BASE_URL}/v2/${allTrxPending[i].order_id}/status`
-    await axios.get(url, configHead, {}).then(async res => {
-      console.log(res.data);
-      if (res.data.status_code == 200) {
-        await transactionsRepository.update(allTrxPending[i].id, { status: 'finished' })
-        for (let j = 0; j < allTrxPending[i].carts.length; j++) {
-          await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "finished" })
-        }
-      } else if (res.data.status_code == 202) {
+    const res = await axios.get(url, configHead)
+    console.log(res.data);
+    if (res.data.status_code == 200) {
+      await transactionsRepository.update(allTrxPending[i].id, { status: 'finished' })
+      for (let j = 0; j < allTrxPending[i].carts.length; j++) {
+        await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "finished" })
+      }
+    } else if (res.data.status_code == 202) {
+      await transactionsRepository.update(allTrxPending[i].id, { status: 'expired' })
+      for (let j = 0; j < allTrxPending[i].carts.length; j++) {
+        await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "expired" })
+        // Mengahpus kursi yang sudah di booking
+        await chairsAvailablle.update2({ ticket_id: allTrxPending[i].carts[j].ticket.id, user_id: allTrxPending[i].user_id, chair_number: allTrxPending[i].carts[j].chair_number }, { user_id: null })
+      }
+    } else {
+      let diff = parseFloat(((now - lastCheckout) / 1000) / 3600)
+      console.log(diff, lastCheckout.toUTCString(), now.toUTCString());
+      if (diff >= 24) {
         await transactionsRepository.update(allTrxPending[i].id, { status: 'expired' })
         for (let j = 0; j < allTrxPending[i].carts.length; j++) {
           await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "expired" })
           // Mengahpus kursi yang sudah di booking
+          // --------- INI BUGNYA. SELECT KURANG SPESIFIK ------------------------
           await chairsAvailablle.update2({ ticket_id: allTrxPending[i].carts[j].ticket.id, user_id: allTrxPending[i].user_id, chair_number: allTrxPending[i].carts[j].chair_number }, { user_id: null })
         }
-      } else {
-        let diff = parseFloat(((now - lastCheckout) / 1000) / 3600)
-        console.log(diff, lastCheckout.toUTCString(), now.toUTCString());
-        if (diff >= 24) {
-          await transactionsRepository.update(allTrxPending[i].id, { status: 'expired' })
-          for (let j = 0; j < allTrxPending[i].carts.length; j++) {
-            await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "expired" })
-            // Mengahpus kursi yang sudah di booking
-            // --------- INI BUGNYA. SELECT KURANG SPESIFIK ------------------------
-            await chairsAvailablle.update2({ ticket_id: allTrxPending[i].carts[j].ticket.id, user_id: allTrxPending[i].user_id, chair_number: allTrxPending[i].carts[j].chair_number }, { user_id: null })
-          }
-        }
       }
-    }).catch(err => {
-      console.log(err);
-    })
-
+    }
   }
+  
+  return {user: args}
 }
 
 module.exports = {
