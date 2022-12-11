@@ -57,14 +57,14 @@ module.exports = {
             name: req.body.airline,
             from: req.body.from_city,
             dest: req.body.destination,
-            date_air: req.body.date_air,
+            date_air: new Date(req.body.date_air),
             price: req.body.price,
             no_chair: req.body.no_chair,
             type: req.body.type_ticket,
             trip_type: '-',
             deleted: false,
             logo: req.body.image,
-            estimated_up_dest: req.body.estimated_up_dest,
+            estimated_up_dest: new Date(req.body.estimated_up_dest),
             kelas: req.body.kelas
         }
 
@@ -84,16 +84,16 @@ module.exports = {
                     flight_number: flightCodeNumber,
                     from: req.body.from_city,
                     dest: req.body.destination,
-                    date_air: req.body.date_air,
-                    estimated_up_dest: req.body.estimated_up_dest,
+                    date_air: new Date(req.body.date_air),
+                    estimated_up_dest: new Date(req.body.estimated_up_dest),
                     deleted: false
                 });
             let tickets = await ticketsRepo.findAll({
                 flight_number: flightCodeNumber,
                 from: req.body.from_city,
                 dest: req.body.destination,
-                date_air: req.body.date_air,
-                estimated_up_dest: req.body.estimated_up_dest,
+                date_air: new Date(req.body.date_air),
+                estimated_up_dest: new Date(req.body.estimated_up_dest),
                 deleted: false
             })
             console.log("=========================== MUlai Sini 2 ========================");
@@ -120,13 +120,13 @@ module.exports = {
             name: req.body.airline,
             from: req.body.from_city,
             dest: req.body.destination,
-            date_air: req.body.date_air,
+            date_air: new Date(req.body.date_air),
             price: req.body.price,
             no_chair: req.body.no_chair,
             type: req.body.type_ticket,
             deleted: false,
             logo: req.body.image,
-            estimated_up_dest: req.body.estimated_up_dest,
+            estimated_up_dest: new Date(req.body.estimated_up_dest),
             kelas: req.body.kelas
         }
 
@@ -145,8 +145,8 @@ module.exports = {
                 flight_number: flightCodeNumber,
                 from: req.body.from_city,
                 dest: req.body.destination,
-                date_air: req.body.date_air,
-                estimated_up_dest: req.body.estimated_up_dest,
+                date_air: new Date(req.body.date_air),
+                estimated_up_dest: new Date(req.body.estimated_up_dest),
                 deleted: false
             })
             if (tickets.length > 1) {
@@ -193,7 +193,7 @@ module.exports = {
         let args = {
             from: req.query.from,
             dest: req.query.destination,
-            date_air: { [Sequelize.Op.between]: [req.query.depart + 'T00:00:00.000Z', req.query.depart + 'T23:59:00.000Z'] },
+            date_air: { [Sequelize.Op.between]: [new Date(req.query.depart), new Date(req.query.depart)] },
             deleted: false
         }
         if (!schedule) {
@@ -217,7 +217,7 @@ module.exports = {
             }
             console.log(data.go);
             if (req.query.return) {
-                args.date_air = { [Sequelize.Op.between]: [req.query.return + 'T00:00:00.000Z', req.query.return + 'T23:59:00.000Z'] }
+                args.date_air = { [Sequelize.Op.between]: [new Date(req.query.return), new Date(req.query.return)] }
                 data.return = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
                 for (let i = 0; i < data.return.length; i++) {
                     let chairsFree = await chairRepo.findAll({ ticket_id: data.return[i].id, user_id: null })

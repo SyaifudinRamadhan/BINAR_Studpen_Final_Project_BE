@@ -25,14 +25,16 @@ const update = async (userID = null) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': `Basic ${btoa(process.env.SERVER_KEY + ":")}`
-    }
+    },
+    timeout: 60000, //optional
+    httpsAgent: new https.Agent({ keepAlive: true }),
   }
 
   for (let i = 0; i < allTrxPending.length; i++) {
     let lastCheckout = new Date(allTrxPending[i].updatedAt)
     let now = new Date()
     let url = `${process.env.MID_BASE_URL}/v2/${allTrxPending[i].order_id}/status`
-    axios.get(url, configHead).then(async res => {
+    await axios.get(url, configHead, {}).then(async res => {
       console.log(res.data);
       if (res.data.status_code == 200) {
         await transactionsRepository.update(allTrxPending[i].id, { status: 'finished' })
@@ -48,6 +50,7 @@ const update = async (userID = null) => {
         }
       } else {
         let diff = parseFloat(((now - lastCheckout) / 1000) / 3600)
+        console.log(diff, lastCheckout.toUTCString(), now.toUTCString());
         if (diff >= 24) {
           await transactionsRepository.update(allTrxPending[i].id, { status: 'expired' })
           for (let j = 0; j < allTrxPending[i].carts.length; j++) {
@@ -61,6 +64,7 @@ const update = async (userID = null) => {
     }).catch(err => {
       console.log(err);
     })
+
   }
 }
 
@@ -167,12 +171,12 @@ module.exports = {
         deleted: false,
         status: { [Sequelize.Op.ne]: "pending" }
       }
-      if(req.user.access_level != 0){
+      if (req.user.access_level != 0) {
         args.user_id = req.user.id
       }
 
       const trx = JSON.parse(JSON.stringify(await transactionsRepository.find(args)))
-      
+
       if (!trx) {
         return { error: 404, msg: "Transaksi tidak ditemukan" }
       }
