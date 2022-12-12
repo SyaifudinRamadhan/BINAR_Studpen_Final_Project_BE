@@ -139,7 +139,7 @@ module.exports = {
                     if (check) user = user[i]
                 }
                 if (user.deleted) return { error: 401, msg: "Akses dilarang, user tidak terdaftar" }
-                if (user.active !== true) return { error: 403, msg: "Akses ditolak, akun user belum aktif" }
+                if (user.active == false) return { error: 403, msg: "Akses ditolak, akun user belum aktif" }
                 if (check) {
                     let token = createToken(user.id)
                     return { token, user }
