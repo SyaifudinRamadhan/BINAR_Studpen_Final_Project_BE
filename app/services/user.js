@@ -7,6 +7,7 @@ const jwtWeb = require('jsonwebtoken');
 const dotenv = require('dotenv')
 const jwt_decode = require('jwt-decode');
 const { sendEmail } = require('./emailSender');
+const notification = require('../repositories/notification');
 
 dotenv.config();
 
@@ -191,6 +192,10 @@ module.exports = {
         try {
             let update = await users.update(req.user.id, {
                 active: true
+            })
+            notification.create({
+                user_id: req.user.id,
+                notification: `Selamat Datang ${req.user.username} di Aplikasi MyAirFare`
             })
             return { update }
         } catch (error) {

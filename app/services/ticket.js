@@ -193,9 +193,10 @@ module.exports = {
         let args = {
             from: req.query.from,
             dest: req.query.destination,
-            date_air: { [Sequelize.Op.between]: [new Date(req.query.depart), new Date(req.query.depart)] },
+            date_air: { [Sequelize.Op.between]: [new Date(req.query.depart+" 00:00"), new Date(req.query.depart+" 23:59")] },
             deleted: false
         }
+        // console.log(new Date(req.query.depart+" 00:00"), new Date(req.query.depart+" 23:59"));
         if (!schedule) {
             // Mendapatkan ID class dan ID type
             let passengers = req.query.type_passenger.map(function (x) { return x.toUpperCase(); })
@@ -217,7 +218,7 @@ module.exports = {
             }
             console.log(data.go);
             if (req.query.return) {
-                args.date_air = { [Sequelize.Op.between]: [new Date(req.query.return), new Date(req.query.return)] }
+                args.date_air = { [Sequelize.Op.between]: [new Date(req.query.return+" 00:00"), new Date(req.query.return+" 23:59")] }
                 data.return = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
                 for (let i = 0; i < data.return.length; i++) {
                     let chairsFree = await chairRepo.findAll({ ticket_id: data.return[i].id, user_id: null })

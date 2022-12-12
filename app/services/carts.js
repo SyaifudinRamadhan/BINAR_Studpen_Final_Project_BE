@@ -5,14 +5,17 @@
 // list wajib menggunakan middleware isLogin
 // create wajib menggunakan middleware isLogin dan getTicket
 // ================================================================
+const { default: axios } = require('axios');
 const cartsRepository = require('../repositories/carts');
 const chairRepo = require('../repositories/chairs_available');
+const notification = require('../repositories/notification');
 const transaction = require('../repositories/transactions')
+const ticketRepo = require('../repositories/tickets.js')
 
 module.exports = {
   async create(req) {
     let tickets = req.body.tickets_id
-    if(tickets == undefined) return { error: 403, msg: "Wajib meninputkan array ticket ID" }
+    if (tickets == undefined) return { error: 403, msg: "Wajib meninputkan array ticket ID" }
     console.log(req.user);
     let argsTrx = {
       user_id: req.user.id,
@@ -24,6 +27,18 @@ module.exports = {
       deleted: false
     }
     try {
+      // Cek apakah tiket sudah kadaluwarsa
+      let available = true
+      for (let i = 0; i < tickets.length; i++){
+        let ticket = await ticketRepo.find({id: tickets[i]})
+        if(ticket.deleted == true || (new Date(ticket.date_air) <= new Date())){
+          available = available && false
+        }else{
+          available = available && true
+        }
+      }
+      if(available == false) return {error: 403, msg: 'Tiket yang anda ingin beli sudah kadaluwarsa'}
+      // Input trx pending dan membuat cartnya
       let trx = await transaction.create(argsTrx)
       for (let i = 0; i < tickets.length; i++) {
         let args = {
@@ -35,6 +50,11 @@ module.exports = {
         await cartsRepository.create(args)
       }
       tickets.length > 1 ? trx.trip_type = "round-trip" : trx.trip_type = "one-way"
+      notification.create({
+        user_id: req.user.id,
+        notification: `Anda meiliki satu transaksi di dalam waiting list. Silahkan melanjutkan ke transaksi jika anda berkehendak`
+      })
+      // Setelah create notify, lakukan axios ke socket server
       return { wait_list: trx }
     } catch (error) {
       console.log(error)
@@ -51,7 +71,7 @@ module.exports = {
       for (let i = 0; i < trx.length; i++) {
         trx[i].carts.length > 1 ? trx[i].trip_type = "round-trip" : trx[i].trip_type = "one-way"
         for (let j = 0; j < trx[i].carts.length; j++) {
-          let chairs = await chairRepo.findAll({ticket_id: trx[i].carts[j].ticket.id, user_id: null})
+          let chairs = await chairRepo.findAll({ ticket_id: trx[i].carts[j].ticket.id, user_id: null })
           trx[i].carts[j].ticket.available = chairs
         }
       }
@@ -76,7 +96,7 @@ module.exports = {
       }
       trx.carts.length > 1 ? trx.trip_type = "round-trip" : trx.trip_type = "one-way"
       for (let j = 0; j < trx.carts.length; j++) {
-        let chairs = await chairRepo.findAll({ticket_id: trx.carts[j].ticket.id, user_id: null})
+        let chairs = await chairRepo.findAll({ ticket_id: trx.carts[j].ticket.id, user_id: null })
         trx.carts[j].ticket.available = chairs
       }
       return { wait_list: trx }
@@ -88,7 +108,7 @@ module.exports = {
   async delete(req) {
     try {
       console.log(req.wait_list);
-      await cartsRepository.destroy({trx_id: req.wait_list.id})
+      await cartsRepository.destroy({ trx_id: req.wait_list.id })
       let deleted = await transaction.destroy(req.wait_list.id);
       return { deleted };
     } catch (error) {

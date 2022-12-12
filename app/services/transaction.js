@@ -87,6 +87,18 @@ module.exports = {
         wait_list = await transactionsRepository.find({ id: req.body.wait_list_id, user_id: req.user.id })
         if (!wait_list) {
           return { error: 404, msg: "Data waiting list tujuan tidak ditemukan" }
+        }else{
+          let available = true
+          for (let i = 0; i < wait_list.carts.length; i++) {
+            let tDateAir = new Date(wait_list.carts[i].ticket.date_air)
+            let now  = new Date()
+            if((tDateAir <= now) || wait_list.carts[i].ticket.deleted == true){
+              available = available && false
+            }else{
+              available = available && true
+            }
+          }
+          if(available == false) return {error: 403, msg: 'Tiket yang anda ingin beli sudah kadaluwarsa'}
         }
       }
 
