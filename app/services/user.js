@@ -248,6 +248,7 @@ module.exports = {
             args.f_name = req.body.f_name
             args.l_name = req.body.l_name
             args.photo = req.body.image
+            args.visa_ID = req.body.visa_number
             // args.active = req.body.active
 
             if (req.body.password !== undefined && req.body.password !== '') {

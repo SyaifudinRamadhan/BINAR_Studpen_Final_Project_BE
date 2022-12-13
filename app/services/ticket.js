@@ -219,10 +219,10 @@ module.exports = {
             console.log(data.go);
             if (req.query.return) {
                 args.date_air = { [Sequelize.Op.between]: [new Date(req.query.return+" 00:00"), new Date(req.query.return+" 23:59")] }
-                data.return = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
-                for (let i = 0; i < data.return.length; i++) {
-                    let chairsFree = await chairRepo.findAll({ ticket_id: data.return[i].id, user_id: null })
-                    data.return[i].available = chairsFree
+                data.return_flight = JSON.parse(JSON.stringify(await ticketsRepo.findAll(args)))
+                for (let i = 0; i < data.return_flight.length; i++) {
+                    let chairsFree = await chairRepo.findAll({ ticket_id: data.return_flight[i].id, user_id: null })
+                    data.return_flight[i].available = chairsFree
                 }
             }
 

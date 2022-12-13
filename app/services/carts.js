@@ -50,10 +50,11 @@ module.exports = {
         await cartsRepository.create(args)
       }
       tickets.length > 1 ? trx.trip_type = "round-trip" : trx.trip_type = "one-way"
-      notification.create({
+      let notify = await notification.create({
         user_id: req.user.id,
         notification: `Anda meiliki satu transaksi di dalam waiting list. Silahkan melanjutkan ke transaksi jika anda berkehendak`
       })
+      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
       // Setelah create notify, lakukan axios ke socket server
       return { wait_list: trx }
     } catch (error) {
@@ -110,6 +111,11 @@ module.exports = {
       console.log(req.wait_list);
       await cartsRepository.destroy({ trx_id: req.wait_list.id })
       let deleted = await transaction.destroy(req.wait_list.id);
+      let notify = await notification.create({
+        user_id: req.user.id,
+        notification: `Wait List dengan kode ID ${req.wait_list.id} telah dihapus`
+      })
+      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
       return { deleted };
     } catch (error) {
       console.log(error);
