@@ -853,7 +853,7 @@ paths:
                     type: string
                     example: ['Akses dilarang, akun user tidak ditemukan']
 
-  /api/v1/transactions/:id:
+  /api/v1/transactions/{id}:
     get:
       operationId: getusertransactionsID
       description: Endpoint ini bertujuan untuk menampilkan data by id transaksi tiket user
@@ -868,6 +868,12 @@ paths:
           format: jwt
           description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
           example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: "34"
       responses:
         '200':
           description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
