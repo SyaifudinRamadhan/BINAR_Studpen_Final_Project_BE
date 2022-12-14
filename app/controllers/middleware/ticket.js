@@ -60,6 +60,13 @@ module.exports = {
             res.status(403).json({ errors: ["Field jenis penumpang hanya menerima data Array"] })
             return
         }
+
+        if(req.query.return !== undefined){
+            if(req.query.return < req.query.depart){
+                res.status(403).json({ errors: ["Field return / tanggal pulang tidak boleh kurang dari tanggal berangkat"] })
+                return
+            }
+        }
         next()
     },
     scheduleForm(req, res, next) {

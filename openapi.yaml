@@ -2453,6 +2453,7 @@ components:
             - f_name
             - email
             - title
+            - visa_number
 
             properties:
               username:
@@ -2479,6 +2480,8 @@ components:
               photo:
                 type: string
                 format: binary
+              visa_number:
+                type: string
 
     updateTicketRequest:
       description: Ini adalah request body data untuk update tiket. Ubah data ticket di request body ini.
