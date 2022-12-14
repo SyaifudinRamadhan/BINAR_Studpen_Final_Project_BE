@@ -928,7 +928,6 @@ paths:
                     type: string
                     example: ['Akses dilarang, akun user tidak ditemukan']
 
-  /api/v1/transactions/{id}:
     delete:
       operationId: deleteusertransactionsID
       description: Endpoint ini bertujuan untuk menampilkan data by id transaksi tiket user
