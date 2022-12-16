@@ -53,6 +53,9 @@ apiRouter.get('/api/v1/user-transactions', ctrl.middleware.auths.isLogin, ctrl.a
 apiRouter.get('/api/v1/transactions/:id', ctrl.middleware.auths.isLogin, ctrl.api.v1.transactions.getTrx);
 apiRouter.post('/api/v1/user-transactions', ctrl.middleware.auths.isLogin, ctrl.middleware.trx.create, ctrl.api.v1.transactions.create);
 apiRouter.delete('/api/v1/user-transactions/:id', ctrl.middleware.auths.isLogin, ctrl.middleware.trx.getTrx, ctrl.api.v1.transactions.destroy);
+// Route untuk checkin ticket pesawat
+apiRouter.post("/api/v1/checkin-auto", ctrl.middleware.auths.isLogin, ctrl.api.v1.checkin.createAuto)
+apiRouter.post("/api/v1/checkin-manual", ctrl.middleware.auths.isLogin, ctrl.api.v1.checkin.createManual)
 
 //======================================= Route untuk admin ==================================
 apiRouter.delete("/api/v1/:id/delete-user", ctrl.middleware.auths.isLogin, ctrl.middleware.auths.isAdmin, ctrl.middleware.auths.getUser, ctrl.api.v1.auths.deleteUser)
@@ -77,7 +80,6 @@ apiRouter.get("/api/v1/:email/verify-reset-password", ctrl.middleware.auths.veri
  */
 
 // ================ Route Testing Transaksi ==============================
-
 
 // =======================================================================
 

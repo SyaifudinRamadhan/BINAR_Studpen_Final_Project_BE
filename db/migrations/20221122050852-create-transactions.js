@@ -9,8 +9,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      cart_id: {
-        type: Sequelize.INTEGER
+      user_id: {
+        type: Sequelize.UUID
       },
       price: {
         type: Sequelize.INTEGER
@@ -26,6 +26,15 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING
+      },
+      deleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      order_id: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null
       },
       createdAt: {
         allowNull: false,

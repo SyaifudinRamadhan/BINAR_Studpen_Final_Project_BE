@@ -34,4 +34,7 @@ module.exports = {
       }
     });
   },
+  findAllRelation(argsRel){
+    return Transactions.findAll(argsRel)
+  }
 };
