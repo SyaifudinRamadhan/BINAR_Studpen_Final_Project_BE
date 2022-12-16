@@ -868,12 +868,6 @@ paths:
           format: jwt
           description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
           example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          example: 32
       responses:
         '200':
           description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
@@ -928,7 +922,6 @@ paths:
                     type: string
                     example: ['Akses dilarang, akun user tidak ditemukan']
 
-  /api/v1/transactions/{id}:
     delete:
       operationId: deleteusertransactionsID
       description: Endpoint ini bertujuan untuk menampilkan data by id transaksi tiket user
@@ -994,6 +987,123 @@ paths:
                   errors:
                     type: string
                     example: ['Akses dilarang, akun user tidak ditemukan']
+
+  /api/v1/checkin-auto:
+    post:
+      operationId: checkinAuto
+      tags:
+      - All User Authorization
+      parameters:
+      - in: header
+        name: x-access-token
+        schema:
+          type: string
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNhYzk1MWQtNmE0YS00ZGYyLTgwMzYtNWY3Nzk0MTNmMzg1IiwiaWF0IjoxNjY2MjAxNzEyfQ.n0dbOB6C8EVRsq4PUiQPoUwXbqOP8G4DWisFSz18myg'
+        required: true
+      requestBody:
+        description: Ini adalah request bodi untuk sistem checkin dengan QR Code / Auto chekcin
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                flight_number:
+                  type: string
+                  example: ME 705
+      responses:
+        '200':
+          description: Berikut adalah bentuk respon body dari request checkin yang berhasil dilakukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trxs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/transactionCheckin'
+
+        '403':
+          description: Ini hasil repon error akun user belum login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user login']
+
+        '404':
+          description: Ini hasil repon error data ticket tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Tiket yang sudah dibooking tidak dapat ditemukan / anda sudah terlambat. Silahkan checkin secara manual']
+
+  /api/v1/checkin-manual:
+    post:
+      operationId: checkinManual
+      tags:
+      - All User Authorization
+      parameters:
+      - in: header
+        name: x-access-token
+        schema:
+          type: string
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNhYzk1MWQtNmE0YS00ZGYyLTgwMzYtNWY3Nzk0MTNmMzg1IiwiaWF0IjoxNjY2MjAxNzEyfQ.n0dbOB6C8EVRsq4PUiQPoUwXbqOP8G4DWisFSz18myg'
+        required: true
+      requestBody:
+        description: Ini adalah request bodi untuk sistem checkin dengan input ticket ID dan Order ID
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket_id:
+                  type: string
+                  example: 89396810-14c3-4cc4-8c9b-f873dc2bd011
+                order_id:
+                  type: string
+                  example: 1670937062850
+      responses:
+        '200':
+          description: Berikut adalah bentuk respon body dari request checkin yang berhasil dilakukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trxs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/transactionCheckin'
+
+        '403':
+          description: Ini hasil repon error akun user belum login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user login']
+
+        '404':
+          description: Ini hasil repon error data ticket tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Tiket yang sudah dibooking tidak dapat ditemukan / anda sudah terlambat. Silahkan checkin secara manual']
 
   /api/v1/{id}/ticket:
     get:
@@ -1475,6 +1585,25 @@ paths:
 
 components:
   schemas:
+    checkin:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        trx_id:
+          type: integer
+          example: 50
+        status:
+          type: string
+          example: checkined
+        createdAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+        updatedAt:
+          type: string
+          example: '2022-10-17T14:13:12.647Z'
+
     available:
       type: object
       properties:
@@ -1600,6 +1729,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/cartTransaction'
+
+    transactionCheckin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 47
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        price:
+          type: integer
+          example: 500000
+        count:
+          type: integer
+          example: 2
+        token_trx:
+          type: string
+          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
+        give_to:
+          type: string
+          example: admin@mail.com
+        status:
+          type: string
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: string
+          example: 1670860184630
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin'
+        checkins:
+          $ref: '#/components/schemas/checkin'
 
     transactionPost:
       type: object
@@ -1818,6 +1990,36 @@ components:
         checkins:
           type: string
           example: []
+
+    cartTransactionCheckin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction'
 
     ticket2:
       type: object
@@ -2459,6 +2661,7 @@ components:
             - f_name
             - email
             - title
+            - visa_number
 
             properties:
               username:
@@ -2485,6 +2688,8 @@ components:
               photo:
                 type: string
                 format: binary
+              visa_number:
+                type: string
 
     updateTicketRequest:
       description: Ini adalah request body data untuk update tiket. Ubah data ticket di request body ini.

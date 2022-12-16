@@ -29,8 +29,10 @@ module.exports = {
     try {
       // Cek apakah tiket sudah kadaluwarsa
       let available = true
+      let dateAirs = []
       for (let i = 0; i < tickets.length; i++){
         let ticket = await ticketRepo.find({id: tickets[i]})
+        dateAirs.push([new Date(ticket.date_air), new Date(ticket.estimated_up_dest)])
         if(ticket.deleted == true || (new Date(ticket.date_air) <= new Date())){
           available = available && false
         }else{
@@ -38,6 +40,11 @@ module.exports = {
         }
       }
       if(available == false) return {error: 403, msg: 'Tiket yang anda ingin beli sudah kadaluwarsa'}
+      if(dateAirs.length > 1){
+        if(dateAirs[1][0] <= dateAirs[0][1]){
+          return {error: 403, msg: 'Tiket yang anda ingin beli memiliki waktu berangkat dan pulang yang serupa / waktu pulang kurang dari waktu berangkat'}
+        }
+      }
       // Input trx pending dan membuat cartnya
       let trx = await transaction.create(argsTrx)
       for (let i = 0; i < tickets.length; i++) {

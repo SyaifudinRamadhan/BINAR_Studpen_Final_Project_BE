@@ -9,8 +9,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.UUID
+      trx_id: {
+        type: Sequelize.INTEGER
       },
       ticket_id: {
         type: Sequelize.UUID
@@ -20,6 +20,10 @@ module.exports = {
       },
       deleted: {
         type: Sequelize.BOOLEAN
+      },
+      chair_number: {
+        allowNull: true,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

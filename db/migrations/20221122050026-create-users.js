@@ -44,6 +44,16 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      photo: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: '/user/avatar_default.png'
+      },
+      visa_ID: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null
       }
     });
   },

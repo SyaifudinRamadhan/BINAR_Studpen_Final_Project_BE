@@ -37,6 +37,20 @@ module.exports = {
       deleted: {
         type: Sequelize.BOOLEAN
       },
+      logo: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: '/ticket/ticket_default.jpg'
+      },
+      flight_number: {
+        type: Sequelize.STRING,
+      },
+      kelas: {
+        type: Sequelize.INTEGER,
+      },
+      estimated_up_dest: {
+        type: Sequelize.DATE,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
