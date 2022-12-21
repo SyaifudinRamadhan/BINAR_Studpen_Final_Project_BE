@@ -868,6 +868,12 @@ paths:
           format: jwt
           description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
           example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjY1M2YzNjktNGRmNC00M2Y5LWE2NzMtOWVjNjEwMzU5NDI1IiwiaWF0IjoxNjY2MDcwNjA3fQ.a2uU6WZ_wW6zfZOTSYzSLusiuTTczLYCvW7GBfioMvo
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: 40
       responses:
         '200':
           description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
@@ -1583,8 +1589,1075 @@ paths:
                     type: string
                     example: ['Tiket tidak ditemukan']
 
+  /api/v1/users:
+    get:
+      operationId: getDataUser
+      description: Endpoint ini bertujuan untuk menampilkan data aktifitas user
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
+      responses:
+        '200':
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      oneOf:
+                      - $ref: '#/components/schemas/usertoAdmin'
+
+        '400':
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
+
+        '401':
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, user tidak terdaftar']
+
+        '403':
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user belum aktif']
+
+        '404':
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user tidak ditemukan']
+
+  /api/v1/{id}/user:
+    get:
+      operationId: getDataUserbyid
+      description: Endpoint ini bertujuan untuk menampilkan data aktifitas user
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        required: true
+      summary: mencari data user berdasarkan id
+      responses:
+        '200':
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: array
+                    items:
+                      oneOf:
+                      - $ref: '#/components/schemas/usertoAdmin2'
+
+        '400':
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
+
+        '401':
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, user tidak terdaftar']
+
+        '403':
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user belum aktif']
+
+        '404':
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user tidak ditemukan']
+
+  /api/v1/{email}/user-email:
+    get:
+      operationId: getDataUserbyEmail
+      description: Endpoint ini bertujuan untuk menampilkan data aktifitas user
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
+      - in: path
+        name: email
+        schema:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        required: true
+      summary: mencari data user berdasarkan id
+      responses:
+        '200':
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: array
+                    items:
+                      oneOf:
+                      - $ref: '#/components/schemas/usertoAdmin'
+
+        '400':
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
+
+        '401':
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, user tidak terdaftar']
+
+        '403':
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user belum aktif']
+
+        '404':
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user tidak ditemukan']
+
+  /api/v1/admin-transactions:
+    get:
+      operationId: getDatatransactions
+      description: Endpoint ini bertujuan untuk menampilkan data aktifitas tranksaksi
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
+      responses:
+        '200':
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transaction:
+                    type: array
+                    items:
+                      oneOf:
+                      - $ref: '#/components/schemas/adminTrasaction'
+
+        '400':
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
+
+        '401':
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, user tidak terdaftar']
+
+        '403':
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user belum aktif']
+
+        '404':
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user tidak ditemukan']
+
+  /api/v1/transactions/:{id}:
+    get:
+      operationId: getDatatransactionsById
+      description: Endpoint ini bertujuan untuk menampilkan data aktifitas tranksaksi by ID
+      tags:
+      - Admin Authorization
+      parameters:
+      - name: x-access-token
+        in: header
+        required: true
+        schema:
+          type: string
+          format: jwt
+          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
+          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        required: true
+      summary: mencari data transaksi berdasarkan id
+      responses:
+        '200':
+          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transaction:
+                    type: array
+                    items:
+                      oneOf:
+                      - $ref: '#/components/schemas/adminTrasaction2'
+
+        '400':
+          description: Ini hasil respon jika proses update profil gagal disimpan ke server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequest'
+
+        '401':
+          description: Ini hasil respon error autorisaasi / login gagal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, user tidak terdaftar']
+
+        '403':
+          description: Ini hasil repon error akun user belum aktif / verifikasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user belum aktif']
+
+        '404':
+          description: Ini hasil repon error akun user tidak ditemukan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                    example: ['Akses dilarang, akun user tidak ditemukan']
+
+
 components:
   schemas:
+
+    adminTrasaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 71
+        user_id:
+          type: string
+          example: 0042d1d0-10da-495a-b7b3-b198654ac4f6
+        price:
+          type: string
+          example: 1200000
+        count:
+          type: string
+          example: 1
+        token_trx:
+          type: string
+          example: cc3603be-aeac-4bf6-b6eb-5a8ec08dcf5d
+        give_to:
+          type: string
+          example: begokrabb@gmail.com
+        status:
+          type: string
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: integer
+          example: 1671382001860
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/userDataBasic'
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin4'
+        checkins:
+          type: array
+          items:
+            $ref: '#/components/schemas/checkin'
+
+    adminTrasaction2:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 71
+        user_id:
+          type: string
+          example: 0042d1d0-10da-495a-b7b3-b198654ac4f6
+        price:
+          type: string
+          example: 1200000
+        count:
+          type: string
+          example: 1
+        token_trx:
+          type: string
+          example: cc3603be-aeac-4bf6-b6eb-5a8ec08dcf5d
+        give_to:
+          type: string
+          example: begokrabb@gmail.com
+        status:
+          type: string
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: integer
+          example: 1671382001860
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        user:
+          type: array
+          items:
+            $ref: '#/components/schemas/userDataBasic'
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin5'
+        checkins:
+          type: string
+          example: []
+
+    ticketTransaction2:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        name:
+          type: string
+          example: Citilink
+        from:
+          type: string
+          example: Suarabaya
+        dest:
+          type: string
+          example: Malaysia
+        date_air:
+          type: string
+          example: 2022-12-06T10:00:00.000Z
+        price:
+          type: integer
+          example: 120000
+        no_chair:
+          type: integer
+          example: 25
+        type:
+          type: string
+          description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+          example: 1
+        trip_type:
+          type: string
+          description: Field ini tidak digunakan. Abaikan saja.
+          example: '-'
+        deleted:
+          type: boolean
+          example: false
+        logo:
+          type: string
+          description: field logo, bersikan path dir url. Untuk mengaksesnya tambahkan url origin dari server (url server + path dir url logo)
+          example: /ticket/_image_1669831314308_205258606.jpg
+        flight_number:
+          type: string
+          example: CK 507
+        kelas:
+          type: string
+          example: 1
+        estimated_up_dest:
+          type: string
+          description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+          example: 2022-12-06T11:00:00.000Z
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        ticketClass:
+          $ref: '#/components/schemas/ticketClass'
+        passenger:
+          $ref: '#/components/schemas/ticketType'
+
+    chair:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 754
+        ticket_id:
+          type: string
+          example: fbddec08-e764-4a20-8cd4-5e8e05a44861
+        user_id:
+          type: string
+          example: 0042d1d0-10da-495a-b7b3-b198654ac4f6
+        chair_number:
+          type: string
+          example: 1
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+
+    ticketTransaction4:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        name:
+          type: string
+          example: Citilink
+        from:
+          type: string
+          example: Suarabaya
+        dest:
+          type: string
+          example: Malaysia
+        date_air:
+          type: string
+          example: 2022-12-06T10:00:00.000Z
+        price:
+          type: integer
+          example: 120000
+        no_chair:
+          type: integer
+          example: 25
+        type:
+          type: string
+          description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+          example: 1
+        trip_type:
+          type: string
+          description: Field ini tidak digunakan. Abaikan saja.
+          example: '-'
+        deleted:
+          type: boolean
+          example: false
+        logo:
+          type: string
+          description: field logo, bersikan path dir url. Untuk mengaksesnya tambahkan url origin dari server (url server + path dir url logo)
+          example: /ticket/_image_1669831314308_205258606.jpg
+        flight_number:
+          type: string
+          example: CK 507
+        kelas:
+          type: string
+          example: 1
+        estimated_up_dest:
+          type: string
+          description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+          example: 2022-12-06T11:00:00.000Z
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        ticketClass:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticketClass'
+        passenger:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticketType'
+        chair:
+          type: array
+          items:
+            $ref: '#/components/schemas/chair'
+
+    ticketTransaction5:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
+        name:
+          type: string
+          example: Citilink
+        from:
+          type: string
+          example: Suarabaya
+        dest:
+          type: string
+          example: Malaysia
+        date_air:
+          type: string
+          example: 2022-12-06T10:00:00.000Z
+        price:
+          type: integer
+          example: 120000
+        no_chair:
+          type: integer
+          example: 25
+        type:
+          type: string
+          description: Field ini berisikan data jenis penumpang. Dewasa / Anak - anak
+          example: 1
+        trip_type:
+          type: string
+          description: Field ini tidak digunakan. Abaikan saja.
+          example: '-'
+        deleted:
+          type: boolean
+          example: false
+        logo:
+          type: string
+          description: field logo, bersikan path dir url. Untuk mengaksesnya tambahkan url origin dari server (url server + path dir url logo)
+          example: /ticket/_image_1669831314308_205258606.jpg
+        flight_number:
+          type: string
+          example: CK 507
+        kelas:
+          type: string
+          example: 1
+        estimated_up_dest:
+          type: string
+          description: Field ini merupkn data perkiran waktu pesawat emdarat di tujuan
+          example: 2022-12-06T11:00:00.000Z
+        createdAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        updatedAt:
+          type: string
+          example: 2022-11-30T18:01:54.557Z
+        ticketClass:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticketClass'
+        passenger:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticketType'
+        chair:
+          type: string
+          example: null
+
+    cartTransactionCheckin2:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction2'
+
+    cartTransactionCheckin4:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction4'
+
+    cartTransactionCheckin5:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction5'
+
+    usertoAdmin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        username:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@mail.com
+        password:
+          type: string
+          example: $2a$10$X7V.FfeIM09h57xISUivxuyaQ3UmjXQcUL.Y6QcgL3icAar5PF4jm
+        g_id:
+          type: string
+          example: 1072512482533-fvj6682610tjhgsmu06i1r5mrk0revoe.apps.googleusercontent.com
+        f_name:
+          type: string
+          example: admin
+        l_name:
+          type: string
+          example: admin
+        active:
+          type: boolean
+          example: true
+        access_level:
+          type: integer
+          example: 1
+        deleted:
+          type: boolean
+          example: false
+        photo:
+          type: string
+          example: /user/avatar_default.png
+        visa_ID:
+          type: string
+          example: null
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        trx:
+          type: array
+          items:
+            $ref: '#/components/schemas/transactionCheckin2'
+
+    transactionCheckin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 47
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        price:
+          type: integer
+          example: 500000
+        count:
+          type: integer
+          example: 2
+        token_trx:
+          type: string
+          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
+        give_to:
+          type: string
+          example: admin@mail.com
+        status:
+          type: string
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: string
+          example: 1670860184630
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin'
+        checkins:
+          $ref: '#/components/schemas/checkin'
+
+    transactionCheckin2:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 47
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        price:
+          type: integer
+          example: 500000
+        count:
+          type: integer
+          example: 2
+        token_trx:
+          type: string
+          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
+        give_to:
+          type: string
+          example: admin@mail.com
+        status:
+          type: string
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: string
+          example: 1670860184630
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin2'
+        checkins:
+          type: array
+          items:
+            $ref: '#/components/schemas/checkin'
+
+    transactionCheckin3:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 47
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        price:
+          type: integer
+          example: 500000
+        count:
+          type: integer
+          example: 2
+        token_trx:
+          type: string
+          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
+        give_to:
+          type: string
+          example: admin@mail.com
+        status:
+          type: string
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: string
+          example: 1670860184630
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransactionCheckin2'
+        checkins:
+          type: string
+          example: []
+
+    usertoAdmin2:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        username:
+          type: string
+          example: admin
+        email:
+          type: string
+          example: admin@mail.com
+        password:
+          type: string
+          example: $2a$10$X7V.FfeIM09h57xISUivxuyaQ3UmjXQcUL.Y6QcgL3icAar5PF4jm
+        g_id:
+          type: string
+          example: 1072512482533-fvj6682610tjhgsmu06i1r5mrk0revoe.apps.googleusercontent.com
+        f_name:
+          type: string
+          example: admin
+        l_name:
+          type: string
+          example: admin
+        active:
+          type: boolean
+          example: true
+        access_level:
+          type: integer
+          example: 1
+        deleted:
+          type: boolean
+          example: false
+        photo:
+          type: string
+          example: /user/avatar_default.png
+        visa_ID:
+          type: string
+          example: null
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        trx:
+          type: array
+          items:
+            $ref: '#/components/schemas/transactionCheckin3'
+
+    cartTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction'
+        checkins:
+          type: string
+          example: []
+
+    cartTransactionCheckin:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 16
+        trx_id:
+          type: string
+          example: 38
+        ticket_id:
+          type: string
+          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
+        status:
+          type: integer
+          example: finished
+        deleted:
+          type: boolean
+          example: false
+        chair_number:
+          type: string
+          example: 17
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        ticket:
+          $ref: '#/components/schemas/ticketTransaction'
+
     checkin:
       type: object
       properties:
@@ -1729,49 +2802,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/cartTransaction'
-
-    transactionCheckin:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 47
-        user_id:
-          type: string
-          example: ee831b29-47e3-495f-82b9-e45797044d89
-        price:
-          type: integer
-          example: 500000
-        count:
-          type: integer
-          example: 2
-        token_trx:
-          type: string
-          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
-        give_to:
-          type: string
-          example: admin@mail.com
-        status:
-          type: string
-          example: pending-payment
-        deleted:
-          type: boolean
-          example: false
-        order_id:
-          type: string
-          example: 1670860184630
-        createdAt:
-          type: string
-          example: 2022-10-15T04:19:51.853Z
-        updatedAt:
-          type: string
-          example: 2022-10-18T10:23:07.277Z
-        carts:
-          type: array
-          items:
-            $ref: '#/components/schemas/cartTransactionCheckin'
-        checkins:
-          $ref: '#/components/schemas/checkin'
 
     transactionPost:
       type: object
@@ -1957,69 +2987,6 @@ components:
         checkins:
           type: string
           example: []
-
-    cartTransaction:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 16
-        trx_id:
-          type: string
-          example: 38
-        ticket_id:
-          type: string
-          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
-        status:
-          type: integer
-          example: pending-payment
-        deleted:
-          type: boolean
-          example: false
-        chair_number:
-          type: string
-          example: 17
-        createdAt:
-          type: string
-          example: 2022-10-15T04:19:51.853Z
-        updatedAt:
-          type: string
-          example: 2022-10-18T10:23:07.277Z
-        ticket:
-          $ref: '#/components/schemas/ticketTransaction'
-        checkins:
-          type: string
-          example: []
-
-    cartTransactionCheckin:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 16
-        trx_id:
-          type: string
-          example: 38
-        ticket_id:
-          type: string
-          example: 50ca49b3-f3c9-4230-9423-8e4b8257c1bf
-        status:
-          type: integer
-          example: finished
-        deleted:
-          type: boolean
-          example: false
-        chair_number:
-          type: string
-          example: 17
-        createdAt:
-          type: string
-          example: 2022-10-15T04:19:51.853Z
-        updatedAt:
-          type: string
-          example: 2022-10-18T10:23:07.277Z
-        ticket:
-          $ref: '#/components/schemas/ticketTransaction'
 
     ticket2:
       type: object
@@ -2452,7 +3419,7 @@ components:
         id:
           type: string
           example: 1
-        passenger:
+        name:
           type: string
           example: ECONOMY
         createdAt:
