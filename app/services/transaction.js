@@ -15,7 +15,7 @@ const sendNotify = async (userId, msg)=>{
     user_id: userId,
     notification: msg
   })
-  axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
+  axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
 }
 
 const update = async (userID = null) => {
@@ -75,7 +75,7 @@ const update = async (userID = null) => {
       if(trxs.length == 0){
         sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
       }else{
-        axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${trxs[0].id}`)
+        axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${trxs[0].id}`)
       }
     }
   }
@@ -187,7 +187,7 @@ module.exports = {
         user_id: req.user.id,
         notification: `Transaksi dengan nomor ${transactionToken} telah berhasil dibuat. Segera lanjutkan pembayran sebelum 24 jam`
       })
-      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
+      axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
       return { trx: final }
     } catch (error) {
       console.log(error)
@@ -286,7 +286,7 @@ module.exports = {
         user_id: req.user.id,
         notification: `Transaksi dengan nomor ${req.trx.token_trx} telah dihapus`
       })
-      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
+      axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
       return {
         deleted
       }

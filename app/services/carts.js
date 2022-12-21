@@ -61,7 +61,7 @@ module.exports = {
         user_id: req.user.id,
         notification: `Anda meiliki satu transaksi di dalam waiting list. Silahkan melanjutkan ke transaksi jika anda berkehendak`
       })
-      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
+      axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
       // Setelah create notify, lakukan axios ke socket server
       return { wait_list: trx }
     } catch (error) {
@@ -122,7 +122,7 @@ module.exports = {
         user_id: req.user.id,
         notification: `Wait List dengan kode ID ${req.wait_list.id} telah dihapus`
       })
-      axios.get(`https://binarfinalsocketserver-production.up.railway.app/set-notify/${notify.id}`)
+      axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
       return { deleted };
     } catch (error) {
       console.log(error);
