@@ -55,8 +55,8 @@ module.exports = {
     async create(req) {
         let args = {
             name: req.body.airline,
-            from: req.body.from_city,
-            dest: req.body.destination,
+            from: req.body.from_city.toUpperCase(),
+            dest: req.body.destination.toUpperCase(),
             date_air: new Date(req.body.date_air),
             price: req.body.price,
             no_chair: req.body.no_chair,
@@ -90,8 +90,8 @@ module.exports = {
                 });
             let tickets = await ticketsRepo.findAll({
                 flight_number: flightCodeNumber,
-                from: req.body.from_city,
-                dest: req.body.destination,
+                from: req.body.from_city.toUpperCase(),
+                dest: req.body.destination.toUpperCase(),
                 date_air: new Date(req.body.date_air),
                 estimated_up_dest: new Date(req.body.estimated_up_dest),
                 deleted: false
@@ -118,8 +118,8 @@ module.exports = {
     async update(req) {
         let args = {
             name: req.body.airline,
-            from: req.body.from_city,
-            dest: req.body.destination,
+            from: req.body.from_city.toUpperCase(),
+            dest: req.body.destination.toUpperCase(),
             date_air: new Date(req.body.date_air),
             price: req.body.price,
             no_chair: req.body.no_chair,
@@ -143,8 +143,8 @@ module.exports = {
             }
             let tickets = await ticketsRepo.findAll({
                 flight_number: flightCodeNumber,
-                from: req.body.from_city,
-                dest: req.body.destination,
+                from: req.body.from_city.toUpperCase(),
+                dest: req.body.destination.toUpperCase(),
                 date_air: new Date(req.body.date_air),
                 estimated_up_dest: new Date(req.body.estimated_up_dest),
                 deleted: false
@@ -191,8 +191,8 @@ module.exports = {
     async filterTicket(req, schedule = false) {
         let data = {}
         let args = {
-            from: req.query.from,
-            dest: req.query.destination,
+            from: req.query.from.toUpperCase(),
+            dest: req.query.destination.toUpperCase(),
             date_air: { [Sequelize.Op.between]: [new Date(req.query.depart+" 00:00"), new Date(req.query.depart+" 23:59")] },
             deleted: false
         }

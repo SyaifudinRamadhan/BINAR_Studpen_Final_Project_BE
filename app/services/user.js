@@ -77,7 +77,7 @@ async function register(req, withGoogle = false) {
                 args.username = tokenDecode.name
                 args.email = tokenDecode.email
                 args.password = await encryptPassword(process.env.passwoordWithGoogle)
-                args.g_id = tokenDecode.aud
+                args.g_id = tokenDecode.sub
                 args.f_name = tokenDecode.given_name
                 args.l_name = tokenDecode.family_name
                 args.active = false
@@ -162,7 +162,7 @@ module.exports = {
         try {
             if (req.body.credential !== undefined) {
                 let tokenDecode = jwt_decode(req.body.credential)
-                let user = await users.find({ g_id: tokenDecode.aud })
+                let user = await users.find({ g_id: tokenDecode.sub })
                 if (user) {
                     if (user.deleted) return { error: 401, msg: "Akses dilarang, user tidak terdaftar" }
                     if (user.active !== true) return { error: 403, msg: "Akses ditolak, akun user belum aktif" }
