@@ -48,7 +48,7 @@ const update = async (userID = null) => {
       for (let j = 0; j < allTrxPending[i].carts.length; j++) {
         await cartsRepo.update(allTrxPending[i].carts[j].id, { status: "finished" })
       }
-      sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah berhasil dibayar (Pembayaran sukses)`)
+      sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].order_id}, telah berhasil dibayar (Pembayaran sukses)`)
     } else if (res.data.status_code == 202) {
       await transactionsRepository.update(allTrxPending[i].id, { status: 'expired' })
       for (let j = 0; j < allTrxPending[i].carts.length; j++) {
@@ -56,7 +56,7 @@ const update = async (userID = null) => {
         // Mengahpus kursi yang sudah di booking
         await chairsAvailablle.update2({ ticket_id: allTrxPending[i].carts[j].ticket.id, user_id: allTrxPending[i].user_id, chair_number: allTrxPending[i].carts[j].chair_number }, { user_id: null })
       }
-      sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
+      sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].order_id}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
     } else {
       let diff = parseFloat(((now - lastCheckout) / 1000) / 3600)
       console.log(diff, lastCheckout.toUTCString(), now.toUTCString());
@@ -68,12 +68,12 @@ const update = async (userID = null) => {
           // --------- INI BUGNYA. SELECT KURANG SPESIFIK ------------------------
           await chairsAvailablle.update2({ ticket_id: allTrxPending[i].carts[j].ticket.id, user_id: allTrxPending[i].user_id, chair_number: allTrxPending[i].carts[j].chair_number }, { user_id: null })
         }
-        sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
+        sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].order_id}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
       }
       // Notifikasi segera bayar tagihan
-      let trxs =  await notification.findAll({user_id: allTrxPending[i].user_id, notification: `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`})
+      let trxs =  await notification.findAll({user_id: allTrxPending[i].user_id, notification: `Segera lanjutkan pembayran sebelum 24 jam pada transaksi dengan nomor ${allTrxPending[i].order_id}`})
       if(trxs.length == 0){
-        sendNotify(allTrxPending[i].user_id, `Transaksi dengan nomor ${allTrxPending[i].token_trx}, telah dibatalakan otomatis oleh sistem. Tenggat pembayaran 24 jam sudah terlewat`)
+        sendNotify(allTrxPending[i].user_id, `Segera lanjutkan pembayran sebelum 24 jam pada transaksi dengan nomor ${allTrxPending[i].order_id}`)
       }else{
         axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${trxs[0].id}`)
       }
@@ -185,7 +185,7 @@ module.exports = {
       let final = await transactionsRepository.find({ id: wait_list.id, user_id: req.user.id })
       let notify = await notification.create({
         user_id: req.user.id,
-        notification: `Transaksi dengan nomor ${transactionToken} telah berhasil dibuat. Segera lanjutkan pembayran sebelum 24 jam`
+        notification: `Transaksi dengan nomor ${rnadomOrderID} telah berhasil dibuat. Segera lanjutkan pembayran sebelum 24 jam`
       })
       axios.get(`https://binarfinalsocketserver-production-1a1f.up.railway.app/set-notify/${notify.id}`)
       return { trx: final }
