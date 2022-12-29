@@ -10,7 +10,9 @@
     "db:drop": "./node_modules/.bin/sequelize-cli db:drop",
     "db:migrate": "./node_modules/.bin/sequelize-cli db:migrate",
     "db:rollback": "./node_modules/.bin/sequelize-cli db:migrate:undo",
-    "db:seed": "./node_modules/.bin/sequelize-cli db:seed:all"
+    "db:seed": "./node_modules/.bin/sequelize-cli db:seed:all",
+    "test": "jest",
+    "report": "google-chrome jest_html_reporters.html"
   },
   "dependencies": {
     "@types/set-tz": "^0.2.0",
@@ -32,10 +34,14 @@
     "sequelize": "^6.25.8",
     "sequelize-cli": "^6.4.1",
     "set-tz": "^0.2.0",
+    "supertest": "^6.3.3",
     "swagger-ui-express": "^4.6.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "jest": "^29.3.1",
+    "jest-html-reporters": "^3.0.11",
+    "jest-json-schema": "^6.1.0",
     "nodemon": "^2.0.15"
   }
 }

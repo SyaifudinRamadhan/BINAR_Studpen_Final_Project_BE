@@ -67,16 +67,16 @@ module.exports = {
             if(data.error){
                 // ganti dengan redirect ke url tertentu res.redirect
                 // res.status(data.error).json({errors: [data.msg]})
-                res.redirect(`/api/v1/errors`)
+                res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/verif-failed`)
             }else{
                 // ganti dengan redirect ke url tertentu res.redirect
                 // res.status(200).json(data)
-                res.redirect(`/`)
+                res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/verif`)
             }
         }).catch(err => {
             // ganti dengan redirect ke url tertentu res.redirect
             // res.status(400).json({errors: [err]})
-            res.redirect(`/api/v1/errors`)
+            res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/verif-failed`)
         })
     },
     verifyForgotPass(req, res){
@@ -84,16 +84,16 @@ module.exports = {
             if(data.error){
                 // ganti dengan redirect ke url tertentu res.redirect
                 // res.status(data.error).json({errors: [data.msg]})
-                res.redirect(`/api/v1/errors`)
+                res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/verif-failed`)
             }else{
                 // ganti dengan redirect ke url tertentu res.redirect
                 // res.status(200).json(data)
-                res.redirect(`/`)
+                res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/`)
             }
         }).catch(err => {
             // ganti dengan redirect ke url tertentu res.redirect
             // res.status(400).json({errors: [err]})
-            res.redirect(`/api/v1/errors`)
+            res.redirect(`https://binar-studpen-final-prj-fe.vercel.app/verif-failed`)
         })
     },
     forgotPassword(req, res){
