@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: myAirfare CRUD and authorization
-  version: 0.1.0
+  version: 0.0.0.4
 servers:
 - description: Mock Server
   url: https://binarstudpenfinalprojectbe-production-77a5.up.railway.app
@@ -530,20 +530,19 @@ paths:
           example: '2022-12-09'
       - name: kelas
         in: query
-        description: parameter countPeople adalah parameter untuk filter kelas tiket yang diinginkkan user
         required: true
         schema:
           type: string
           example: Ekonomi
       - name: type_passenger[]
         in: query
+        required: true
         schema:
           type: string
           example: Dewasa
       - name: return
         in: query
         description: Parameter depart merupakan params kapan waktu kepulangan dari bepergian yang dicari (pencarian tiket untuk pulang pergi sekaligus). Depart bertipe data string dengan format datetime. Namun lebih baik jika mengirim data berformat datetime secara langsung ke params ini
-        required: true
         schema:
           type: string
           example: '2022-12-09'
@@ -564,9 +563,11 @@ paths:
                         items:
                           oneOf:
                           - $ref: '#/components/schemas/ticket2'
-                      return:
-                        type: string
-                        example: []
+                      return_flight:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: '#/components/schemas/ticket2'
 
         '400':
           description: Ini hasil respon jika proses filter ticket gagal dieksekusi oleh server
@@ -859,6 +860,7 @@ paths:
       description: Endpoint ini bertujuan untuk menampilkan data by id transaksi tiket user
       tags:
       - All User Authorization
+      - Admin Authorization
       parameters:
       - name: x-access-token
         in: header
@@ -883,10 +885,7 @@ paths:
                 type: object
                 properties:
                   transaction:
-                    type: array
-                    items:
-                      oneOf:
-                      - $ref: '#/components/schemas/transactionBasic'
+                    $ref: '#/components/schemas/transactionBasic'
 
         '400':
           description: Ini hasil respon jika proses update profil gagal disimpan ke server
@@ -1193,7 +1192,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ticketType'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ticketType'
+
 
         '400':
           description: Ini hasil respon jika proses update profil gagal disimpan ke server
@@ -1246,7 +1248,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ticketClass'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ticketClass'
 
         '400':
           description: Ini hasil respon jika proses update profil gagal disimpan ke server
@@ -1838,82 +1842,6 @@ paths:
                     items:
                       oneOf:
                       - $ref: '#/components/schemas/adminTrasaction'
-
-        '400':
-          description: Ini hasil respon jika proses update profil gagal disimpan ke server
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/badRequest'
-
-        '401':
-          description: Ini hasil respon error autorisaasi / login gagal
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: ['Akses dilarang, user tidak terdaftar']
-
-        '403':
-          description: Ini hasil repon error akun user belum aktif / verifikasi
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: ['Akses dilarang, akun user belum aktif']
-
-        '404':
-          description: Ini hasil repon error akun user tidak ditemukan
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                    example: ['Akses dilarang, akun user tidak ditemukan']
-
-  /api/v1/transactions/:{id}:
-    get:
-      operationId: getDatatransactionsById
-      description: Endpoint ini bertujuan untuk menampilkan data aktifitas tranksaksi by ID
-      tags:
-      - Admin Authorization
-      parameters:
-      - name: x-access-token
-        in: header
-        required: true
-        schema:
-          type: string
-          format: jwt
-          description: Parameter token dengan nama x-access-token adalah parameter wajib untuk mengakses endpoint enpoint pada API ini. x-access-token, bisa didaptakan dari response endpoint login dengan key token
-          example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiMjM1NzRiOGYtM2U4OS00Njg1LWEzNDgtNjdjMWY3ZTViM2M0IiwiaWF0IjoxNjcxNDU4MjYwfQ._5LCrsewnxiGeF5Uw-sj9diRQat611FpDAimbv55SxE
-      - in: path
-        name: id
-        schema:
-          type: string
-          example: 8de06925-c53f-43dd-b0d1-96a3105b60d5
-        required: true
-      summary: mencari data transaksi berdasarkan id
-      responses:
-        '200':
-          description: Berikut bentuk dari respon success endpoint ini. Key carts dalam response ini akan berisi data cart.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  transaction:
-                    type: array
-                    items:
-                      oneOf:
-                      - $ref: '#/components/schemas/adminTrasaction2'
 
         '400':
           description: Ini hasil respon jika proses update profil gagal disimpan ke server
@@ -2760,6 +2688,47 @@ components:
         user:
           $ref: '#/components/schemas/userDataBasic'
 
+    transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 47
+        user_id:
+          type: string
+          example: ee831b29-47e3-495f-82b9-e45797044d89
+        price:
+          type: integer
+          example: 500000
+        count:
+          type: integer
+          example: 2
+        token_trx:
+          type: string
+          example: fb1f428e-b755-4726-b3cc-0f2ff1605bef
+        give_to:
+          type: string
+          example: admin@mail.com
+        status:
+          type: string
+          example: pending-payment
+        deleted:
+          type: boolean
+          example: false
+        order_id:
+          type: string
+          example: 1670860184630
+        createdAt:
+          type: string
+          example: 2022-10-15T04:19:51.853Z
+        updatedAt:
+          type: string
+          example: 2022-10-18T10:23:07.277Z
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/cartTransaction'
+
     transactionBasic:
       type: object
       properties:
@@ -3290,10 +3259,10 @@ components:
         updatedAt:
           type: string
           example: 2022-10-18T10:23:07.277Z
-        carts:
+        trx:
           type: array
           items:
-            $ref: '#/components/schemas/cartDataBasic'
+            $ref: '#/components/schemas/transaction'
 
     userDataBasic:
       type: object
