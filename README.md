@@ -1,8 +1,6 @@
 # Binar: Express.js Final Project
 
 
-# Binar: Express.js Final Project
-
 Repository ini ditujukan untuk pengembangan BE (Backend Final Project BINAR) dari MyAirfare
 
 
